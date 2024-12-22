@@ -2,7 +2,20 @@ plugins {
     id("java")
 }
 
-group = "org.tbl"
+subprojects {
+    group = "org.emangini.servolution"
+
+    apply {
+        plugin("java")
+        plugin("idea")
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
 
 repositories {
     mavenCentral()
