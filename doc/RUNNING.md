@@ -1,15 +1,12 @@
 # Running Services / Containers
 
 ## Contents
-- [Starting Containers (CLI, Detached)](#starting-docker-containers-from-the-cli-in-detached-mode)
-  - [Validate Process](#validate-detached-process)
-  - [Viewing Logs](#viewing-logs)
-  - [Stopping Detached Process](#stopping-detached-process)
-- [Starting Containers (CLI)](#starting-docker-containers-from-the-cli)
-  - [Validating Process](#validating-docker-process)
-- [Starting Services (Intellij)](#starting-services-through-ide-tools)
-- [Starting Services (CLI)](#starting-services-w-java-on-the-cli)
-  - [Stopping Background Processes](#stopping-background-processes)
+- [Containers (Intellij, Docker-Compose)](#starting-containers-intellij-w-docker-compose)
+- [Containers (CLI, Docker-Compose)](#starting-docker-containers-from-the-cli-in-detached-mode)
+- [Containers (CLI, Detached)](#starting-docker-containers-from-the-cli-in-detached-mode)
+- [Containers (CLI)](#starting-docker-containers-from-the-cli)
+- [Services (Intellij)](#starting-services-through-ide-tools)
+- [Services (CLI)](#starting-services-w-java-on-the-cli)
 
 ## Documentation
 - [Readme](../README.md)
@@ -17,6 +14,73 @@
 - [Release Notes](RELEASE.md)
 - [Building](BUILD.md)
 - [Testing Services](TESTING.md)
+---
+
+## Starting Containers (Intellij) w/ Docker-Compose
+
+There are two ways to do this. 
+
+### docker-compose.yml
+
+In the margin of the docker-compose.yml file there is a
+- double-green arrow next to the `services` directive. This will start **all** containers
+- single-green arrows next to the individual containers that will start the those containers
+
+### Intellij Services Tool
+1. Go to Tools --> Services (usually Alt-8 HotKey)
+2. Under **_Docker_**, select each of the Services, Rght-Click and select **Run**
+3. (or) you can right-click the **_Docker_** menu heading and select **Run** to start all of the containers.
+
+
+---
+## Starting Containers (CLI) w/ Docker-Compose
+```shell
+docker-compose up -d
+```
+```text
+[+] Running 5/5
+ ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                         0.1s 
+ ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                         0.5s 
+ ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         0.5s 
+ ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                         0.4s 
+ ✔ Container servicetransformation-product-1            Started          
+```
+
+### Viewing Logs
+```shell
+docker-compose logs -f
+```
+```text
+review-1             | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+review-1             |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+review-1             |   '  |____| .__|_| |_|_| |_\__, | / / / /
+review-1             |  =========|_|==============|___/=/_/_/_/
+review-1             | 
+review-1             |  :: Spring Boot ::                (v3.4.1)
+review-1             | 
+recommendation-1     | 2024-12-23T17:44:36.264Z DEBUG 1 --- [           main] e.s.c.r.RecommendationServiceApplication : Running with Spring Boot v3.4.1, Spring v6.2.1
+recommendation-1     | 2024-12-23T17:44:36.265Z  INFO 1 --- [           main] e.s.c.r.RecommendationServiceApplication : The following 1 profile is active: "docker"
+recommendation-1     | 2024-12-23T17:44:37.775Z  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+recommendation-1     | 2024-12-23T17:44:38.237Z  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080 (http)
+recommendation-1     | 2024-12-23T17:44:38.254Z  INFO 1 --- [           main] e.s.c.r.RecommendationServiceApplication : Started RecommendationServiceApplication in 2.463 seconds (process running for 2.736)
+review-1             | 2024-12-23T17:44:36.446Z  INFO 1 --- [           main] o.e.s.c.review.ReviewServiceApplication  : Starting ReviewServiceApplication using Java 17.0.13 with PID 1 (/application/BOOT-INF/classes started by root in /application)
+review-1             | 2024-12-23T17:44:36.451Z DEBUG 1 --- [           main] o.e.s.c.review.ReviewServiceApplication  : Running with Spring Boot v3.4.1, Spring v6.2.1
+review-1             | 2024-12-23T17:44:36.451Z  INFO 1 --- [           main] o.e.s.c.review.ReviewServiceApplication  : The following 1 profile is active: "docker"
+review-1             | 2024-12-23T17:44:37.890Z  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+review-1             | 2024-12-23T17:44:38.404Z  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080 (http)
+review-1             | 2024-12-23T17:44:38.418Z  INFO 1 --- [           main] o.e.s.c.review.ReviewServiceApplication  : Started ReviewServiceApplication in 2.427 seconds (process running for 2.759)
+```
+
+
+### (Note: Intellij Services Tool)
+Docker Containers started w/ docker-compose can be managed using the Alt-8 Services plugin
+- logs
+- console
+- persistence
+- variables
+- and more!
+
+
 ---
 
 ## Starting Docker Containers from the CLI in Detached Mode

@@ -2,9 +2,14 @@
 
 ## Table of Contents
 
+### Gradle
 - [Build Project (Gradle)](#build-project-gradle)
 - [Build Individual Service (gradle)](#build-indiviual-service-gradle)
-- [Building Docker Images](#building-docker-images)
+
+### Docker
+- [Building Docker Images (w/ docker-compose)](#building-docker-images-w-docker-compose)
+- [Building Docker Images (w/ docker)](#building-docker-images)
+
 
 ## Documentation
 - [Readme](../README.md)
@@ -57,6 +62,94 @@ BUILD SUCCESSFUL in 23s
 BUILD SUCCESSFUL in 2s
 33 actionable tasks: 33 up-to-date
 ```
+## Building Docker Images w/ Docker Compose
+```shell
+docker-compose build
+```
+```text
+WARN[0000] /home/edmangini/IdeaProjects/ServiceTransformation/docker-compose.yml: `version` is obsolete 
+[+] Building 1.5s (44/44) FINISHED                                                                                                                                                                                                                                                            docker:default
+ => [product internal] load build definition from Dockerfile                                                                                                                                                                                                                                            0.0s
+ => => transferring dockerfile: 507B                                                                                                                                                                                                                                                                    0.0s
+ => [recommendation internal] load build definition from Dockerfile                                                                                                                                                                                                                                     0.1s
+ => => transferring dockerfile: 507B                                                                                                                                                                                                                                                                    0.0s
+ => [product internal] load metadata for docker.io/library/amazoncorretto:17                                                                                                                                                                                                                            0.3s
+ => [review internal] load build definition from Dockerfile                                                                                                                                                                                                                                             0.1s
+ => => transferring dockerfile: 507B                                                                                                                                                                                                                                                                    0.0s
+ => [product-composite internal] load build definition from Dockerfile                                                                                                                                                                                                                                  0.1s
+ => => transferring dockerfile: 507B                                                                                                                                                                                                                                                                    0.0s
+ => [product-composite internal] load .dockerignore                                                                                                                                                                                                                                                     0.0s
+ => => transferring context: 2B                                                                                                                                                                                                                                                                         0.0s
+ => [review internal] load .dockerignore                                                                                                                                                                                                                                                                0.2s
+ => => transferring context: 2B                                                                                                                                                                                                                                                                         0.0s
+ => [recommendation internal] load .dockerignore                                                                                                                                                                                                                                                        0.1s
+ => => transferring context: 2B                                                                                                                                                                                                                                                                         0.0s
+ => [product internal] load .dockerignore                                                                                                                                                                                                                                                               0.2s
+ => => transferring context: 2B                                                                                                                                                                                                                                                                         0.0s
+ => [review stage-1 1/6] FROM docker.io/library/amazoncorretto:17@sha256:d14414e3e0c511903957dbd037ff69999f6164820eeea7b46afd62e98ac4d6eb                                                                                                                                                               0.0s
+ => [product-composite internal] load build context                                                                                                                                                                                                                                                     0.1s
+ => => transferring context: 26.46MB                                                                                                                                                                                                                                                                    0.1s
+ => [recommendation internal] load build context                                                                                                                                                                                                                                                        0.3s
+ => => transferring context: 26.45MB                                                                                                                                                                                                                                                                    0.2s
+ => [product internal] load build context                                                                                                                                                                                                                                                               0.3s
+ => => transferring context: 26.45MB                                                                                                                                                                                                                                                                    0.2s
+ => [review internal] load build context                                                                                                                                                                                                                                                                0.3s
+ => => transferring context: 26.45MB                                                                                                                                                                                                                                                                    0.2s
+ => CACHED [product stage-1 2/6] WORKDIR application                                                                                                                                                                                                                                                    0.0s
+ => CACHED [product builder 2/4] WORKDIR extracted                                                                                                                                                                                                                                                      0.0s
+ => CACHED [product-composite builder 3/4] ADD ./build/libs/*.jar app.jar                                                                                                                                                                                                                               0.0s
+ => CACHED [product-composite builder 4/4] RUN java -Djarmode=layertools -jar app.jar extract                                                                                                                                                                                                           0.0s
+ => CACHED [product-composite stage-1 3/6] COPY --from=builder extracted/dependencies/ ./                                                                                                                                                                                                               0.0s
+ => CACHED [product-composite stage-1 4/6] COPY --from=builder extracted/spring-boot-loader/ ./                                                                                                                                                                                                         0.0s
+ => CACHED [product-composite stage-1 5/6] COPY --from=builder extracted/snapshot-dependencies/ ./                                                                                                                                                                                                      0.0s
+ => CACHED [product-composite stage-1 6/6] COPY --from=builder extracted/application/ ./                                                                                                                                                                                                                0.0s
+ => [product-composite] exporting to image                                                                                                                                                                                                                                                              0.1s
+ => => exporting layers                                                                                                                                                                                                                                                                                 0.0s
+ => => writing image sha256:295ead4b726bd5c09b86415cbf8f86964a5dca1bb376083d2725356dd716f839                                                                                                                                                                                                            0.0s
+ => => naming to docker.io/library/servicetransformation-product-composite                                                                                                                                                                                                                              0.0s
+ => CACHED [review builder 3/4] ADD ./build/libs/*.jar app.jar                                                                                                                                                                                                                                          0.0s
+ => CACHED [review builder 4/4] RUN java -Djarmode=layertools -jar app.jar extract                                                                                                                                                                                                                      0.0s
+ => CACHED [review stage-1 3/6] COPY --from=builder extracted/dependencies/ ./                                                                                                                                                                                                                          0.0s
+ => CACHED [review stage-1 4/6] COPY --from=builder extracted/spring-boot-loader/ ./                                                                                                                                                                                                                    0.0s
+ => CACHED [review stage-1 5/6] COPY --from=builder extracted/snapshot-dependencies/ ./                                                                                                                                                                                                                 0.0s
+ => CACHED [review stage-1 6/6] COPY --from=builder extracted/application/ ./                                                                                                                                                                                                                           0.0s
+ => [review] exporting to image                                                                                                                                                                                                                                                                         0.2s
+ => => exporting layers                                                                                                                                                                                                                                                                                 0.0s
+ => => writing image sha256:d567ecca021f370c1910b335e7b9539e1a82019e19d7cd6983661c7296642e84                                                                                                                                                                                                            0.0s
+ => => naming to docker.io/library/servicetransformation-review                                                                                                                                                                                                                                         0.0s
+ => CACHED [recommendation builder 3/4] ADD ./build/libs/*.jar app.jar                                                                                                                                                                                                                                  0.0s
+ => CACHED [recommendation builder 4/4] RUN java -Djarmode=layertools -jar app.jar extract                                                                                                                                                                                                              0.0s
+ => CACHED [recommendation stage-1 3/6] COPY --from=builder extracted/dependencies/ ./                                                                                                                                                                                                                  0.0s
+ => CACHED [recommendation stage-1 4/6] COPY --from=builder extracted/spring-boot-loader/ ./                                                                                                                                                                                                            0.0s
+ => CACHED [recommendation stage-1 5/6] COPY --from=builder extracted/snapshot-dependencies/ ./                                                                                                                                                                                                         0.0s
+ => CACHED [recommendation stage-1 6/6] COPY --from=builder extracted/application/ ./                                                                                                                                                                                                                   0.0s
+ => [recommendation] exporting to image                                                                                                                                                                                                                                                                 0.1s
+ => => exporting layers                                                                                                                                                                                                                                                                                 0.0s
+ => => writing image sha256:188916db65191902328391b79dab4bb9b93654ba7f0597e771392626d6aaf1e4                                                                                                                                                                                                            0.0s
+ => => naming to docker.io/library/servicetransformation-recommendation                                                                                                                                                                                                                                 0.1s
+ => CACHED [product builder 3/4] ADD ./build/libs/*.jar app.jar                                                                                                                                                                                                                                         0.0s
+ => CACHED [product builder 4/4] RUN java -Djarmode=layertools -jar app.jar extract                                                                                                                                                                                                                     0.0s
+ => CACHED [product stage-1 3/6] COPY --from=builder extracted/dependencies/ ./                                                                                                                                                                                                                         0.0s
+ => CACHED [product stage-1 4/6] COPY --from=builder extracted/spring-boot-loader/ ./                                                                                                                                                                                                                   0.0s
+ => CACHED [product stage-1 5/6] COPY --from=builder extracted/snapshot-dependencies/ ./                                                                                                                                                                                                                0.0s
+ => CACHED [product stage-1 6/6] COPY --from=builder extracted/application/ ./                                                                                                                                                                                                                          0.0s
+ => [product] exporting to image                                                                                                                                                                                                                                                                        0.2s
+ => => exporting layers                                                                                                                                                                                                                                                                                 0.0s
+ => => writing image sha256:0908b74f34fae9ebb9bb905f0d2d6b2dc3136053233242f305c884637e227631                                                                                                                                                                                                            0.0s
+ => => naming to docker.io/library/servicetransformation-product                                                                                                                                                                                                                                        0.0s
+```
+
+### Validate
+```shell
+docker images | grep "service"
+```
+```text
+servicetransformation-review              latest    d567ecca021f   2 hours ago   492MB
+servicetransformation-recommendation      latest    188916db6519   2 hours ago   492MB
+servicetransformation-product-composite   latest    295ead4b726b   2 hours ago   492MB
+servicetransformation-product             latest    0908b74f34fa   2 hours ago   492MB
+```
+
 ---
 
 ## Building Docker Images
@@ -179,7 +272,6 @@ View build details: docker-desktop://dashboard/build/default/default/tf91v7oro2t
 docker images | grep "service"
 ```
 ```text
-
 review-service              latest                    b0ba3d1441aa   2 minutes ago   492MB
 recommendation-service      latest                    24c35a97d0be   2 minutes ago   492MB
 product-composite-service   latest                    ded981a1912c   2 minutes ago   492MB
