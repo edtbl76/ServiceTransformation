@@ -80,6 +80,10 @@ Docker Containers started w/ docker-compose can be managed using the Alt-8 Servi
 - variables
 - and more!
 
+### Shutting them down
+```shell
+docker-compose down
+```
 
 ---
 

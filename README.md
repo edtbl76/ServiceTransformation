@@ -32,17 +32,22 @@
 
 2. Build Docker Images
 ```shell
-docker build -t product-composite-service product-composite-service/
-docker build -t product-service product-service/
-docker build -t recommendation-service recommendation-service/
-docker build -t review-service review-service/
+docker-compose build
 ```
 3. Validate images
 ```shell
 docker images | grep "service"
 ```
-
-
+4. Start containers (Optional)
+Just a smoke test before you run the test suite
+```shell
+docker-compose up -d
+docker-compose down
+```
+5. Run the test suite
+```shell
+./testRunner.sh start stop
+```
 
 ---
 

@@ -1,6 +1,7 @@
 # Testing the System
 
 ## Contents
+- [Automated Tests (Docker-Compose) w/ testRunner.sh]()
 - [Automated Tests (Local) w/ testRunner.sh](#automated-tests-local)
 - [Manual Tests (Docker Endpoint) w/ httpie](#manually-testing-docker)
 - [Manual Tests (Local) w/ curl, httpie](#manual-testing-local)
@@ -17,6 +18,54 @@
 - [Building](BUILD.md)
 - [Running Services](RUNNING.md)
 
+
+---
+## Automated Tests (Docker-Compose)
+```shell
+./testRunner.sh start stop
+```
+```text
+Starting Landscape Tests:  Mon Dec 23 02:54:16 PM EST 2024
+HOST=localhost
+PORT=8080
+Restarting test environment...
+$ docker-compose down --remove-orphans
+-compose up -d
+[+] Running 5/5
+ ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                         0.0s 
+ ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                         0.5s 
+ ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         0.3s 
+ ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                         0.5s 
+ ✔ Container servicetransformation-product-1            Started                                                                                                                                                                                                                                         0.5s 
+Wait for: http://localhost:8080/product-composite/1... , retry #1 DONE, continues...
+Test OK (HTTP Status: 200)
+Test OK (actual value: 1)
+Test OK (actual value: 3)
+Test OK (actual value: 3)
+Test OK (HTTP Status: 404, {"timestamp":"2024-12-23T19:54:21.262130911Z","path":"/product-composite/13","message":"No product found for productId: 13","status":404,"error":"Not Found"})
+Test OK (actual value: No product found for productId: 13)
+Test OK (HTTP Status: 200)
+Test OK (actual value: 113)
+Test OK (actual value: 0)
+Test OK (actual value: 3)
+Test OK (HTTP Status: 200)
+Test OK (actual value: 213)
+Test OK (actual value: 3)
+Test OK (actual value: 0)
+Test OK (HTTP Status: 422, {"timestamp":"2024-12-23T19:54:21.441487477Z","path":"/product-composite/-1","message":"Invalid productId: -1","status":422,"error":"Unprocessable Entity"})
+Test OK (actual value: "Invalid productId: -1")
+Test OK (HTTP Status: 400, {"timestamp":"2024-12-23T19:54:21.474+00:00","path":"/product-composite/invalidProductId","status":400,"error":"Bad Request","requestId":"07a866b3-7","message":"Type mismatch."})
+Test OK (actual value: "Type mismatch.")
+Tests completed, shutting down test environment...
+$ docker-compose down
+[+] Running 5/5
+ ✔ Container servicetransformation-recommendation-1     Removed                                                                                                                                                                                                                                         2.4s 
+ ✔ Container servicetransformation-review-1             Removed                                                                                                                                                                                                                                         2.3s 
+ ✔ Container servicetransformation-product-composite-1  Removed                                                                                                                                                                                                                                         2.4s 
+ ✔ Container servicetransformation-product-1            Removed                                                                                                                                                                                                                                         2.3s 
+ ✔ Network servicetransformation_default                Removed                                                                                                                                                                                                                                         0.1s 
+End, all tests OK:  Mon Dec 23 02:54:23 PM EST 2024
+```
 
 ---
 
@@ -58,6 +107,8 @@ End, all tests OK:  Mon Dec 23 09:11:24 AM EST 2024
 ---
 
 ## Manually Testing (Docker)
+
+### Testing Product Service Directly
 ```shell
 http http://localhost:8080/product/3
 ```
@@ -75,7 +126,64 @@ Content-Type: application/json
 }
 ```
 
----
+### Testing Product Composite
+```shell
+http http://localhost:8080/product-composite/123 --unsorted
+```
+Notice that the **service addresses** are different from the local services (the ports)
+```text
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 628
+
+{
+    "productId": 123,
+    "name": "name-123",
+    "weight": 123,
+    "recommendations": [
+        {
+            "recommendationId": 1,
+            "author": "Author 1",
+            "rate": 1
+        },
+        {
+            "recommendationId": 2,
+            "author": "Author 2",
+            "rate": 2
+        },
+        {
+            "recommendationId": 3,
+            "author": "Author 3",
+            "rate": 3
+        }
+    ],
+    "reviews": [
+        {
+            "reviewId": 1,
+            "author": "Author 1",
+            "subject": "Subject 1"
+        },
+        {
+            "reviewId": 2,
+            "author": "Author 2",
+            "subject": "Subject 2"
+        },
+        {
+            "reviewId": 3,
+            "author": "Author 3",
+            "subject": "Subject 3"
+        }
+    ],
+    "serviceAddresses": {
+        "compositeAddress": "d4e6252e08cf/172.20.0.5:8080",
+        "productAddress": "d95022979ed4/172.20.0.3:8080",
+        "reviewAddress": "04d47707b78a/172.20.0.4:8080",
+        "recommendationAddress": "a76a2b3a7df8/172.20.0.2:8080"
+    }
+}
+```
+
+
 
 ---
 ## Manual Testing (Local)

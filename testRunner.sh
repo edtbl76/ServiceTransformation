@@ -61,7 +61,7 @@ function testUrl() {
 
 function waitForService() {
   url=$@
-  echo -n "Wait for: $url.. "
+  echo -n "Wait for: $url... "
   n=0
   until testUrl $url
   do
@@ -85,15 +85,14 @@ echo "Starting Landscape Tests: " `date`
 echo "HOST=${HOST}"
 echo "PORT=${PORT}"
 
-if [[ $@ == "start" ]]
+if [[ $@ == *"start"* ]]
 then
-    echo "Restarting test environment..."
-    echo "$ docker-compose down --remove-orphans"
-    docker-compose down --remove-orphans
-    echo "$docker-compose up -d"
-    docker-compose up -d
+  echo "Restarting test environment..."
+  echo "$ docker-compose down --remove-orphans"
+  docker-compose down --remove-orphans
+  echo "$docker-compose up -d"
+  docker-compose up -d
 fi
-
 waitForService http://$HOST:${PORT}/product-composite/1
 
 # Verify normal request. (3 recommendations, 3 reviews)
