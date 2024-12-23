@@ -57,7 +57,7 @@ class ReviewServiceApplicationTest {
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.path").isEqualTo("/review")
-                .jsonPath("$.message").isEqualTo("Type mismatch");
+                .jsonPath("$.message").isEqualTo("Type mismatch.");
     }
 
     @Test
@@ -66,12 +66,12 @@ class ReviewServiceApplicationTest {
         int productIdNotFound = 213;
 
         client.get()
-                .uri("/review?productId" + productIdNotFound)
+                .uri("/review?productId=" + productIdNotFound)
                 .exchange()
-                .expectStatus().isNotFound()
+                .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.length").isEqualTo(0);
+                .jsonPath("$.length()").isEqualTo(0);
 
     }
 
@@ -79,7 +79,7 @@ class ReviewServiceApplicationTest {
     void getReviewsInvalidParameterNegativeValue() {
 
         int productIdInvalid = -1;
-        
+
         client.get()
                 .uri("/review?productId=" + productIdInvalid)
                 .exchange()

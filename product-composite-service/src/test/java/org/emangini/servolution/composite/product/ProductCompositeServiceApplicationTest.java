@@ -4,6 +4,8 @@ package org.emangini.servolution.composite.product;
 import org.emangini.servolution.api.core.recommendation.Recommendation;
 import org.emangini.servolution.api.core.review.Review;
 import org.emangini.servolution.api.core.product.Product;
+import org.emangini.servolution.api.exceptions.InvalidInputException;
+import org.emangini.servolution.api.exceptions.NotFoundException;
 import org.emangini.servolution.composite.product.services.ProductCompositeIntegration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,6 @@ class ProductCompositeServiceApplicationTest {
                         "mock address"
                 )));
 
-
         when(compositeIntegration.getReviews(PRODUCT_ID_OK))
                 .thenReturn(singletonList(new Review(
                         PRODUCT_ID_OK,
@@ -59,6 +60,11 @@ class ProductCompositeServiceApplicationTest {
                         "mock address"
                 )));
 
+        when(compositeIntegration.getProduct(PRODUCT_ID_NOT_FOUND))
+                .thenThrow(new NotFoundException("NOT FOUND: " + PRODUCT_ID_NOT_FOUND));
+
+        when(compositeIntegration.getProduct(PRODUCT_ID_INVALID))
+                .thenThrow(new InvalidInputException("INVALID: " + PRODUCT_ID_INVALID));
     }
 
     @Test

@@ -29,7 +29,7 @@ public class RecommendationServiceImpl implements RecommendationService {
             throw new InvalidInputException("Invalid productId: " + productId);
         }
 
-        if (productId == 13) {
+        if (productId == 113) {
             log.debug("No recommendations found for productId: {}", productId);
             return new ArrayList<>();
         }

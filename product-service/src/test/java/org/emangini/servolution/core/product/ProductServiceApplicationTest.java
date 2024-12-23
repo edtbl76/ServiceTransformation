@@ -44,7 +44,7 @@ class ProductServiceApplicationTest {
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.path").isEqualTo("/product/no-integer")
-                .jsonPath("$.message").isEqualTo("Type mismatch");
+                .jsonPath("$.message").isEqualTo("Type mismatch.");
     }
 
     @Test
@@ -60,7 +60,7 @@ class ProductServiceApplicationTest {
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.path").isEqualTo("/product/" + productIdNotFound)
-                .jsonPath("$.message").isEqualTo("NOT FOUND: " + productIdNotFound);
+                .jsonPath("$.message").isEqualTo("No product found for productId: " + productIdNotFound);
     }
 
     @Test

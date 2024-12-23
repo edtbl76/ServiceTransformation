@@ -60,7 +60,7 @@ class RecommendationServiceApplicationTest {
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.path").isEqualTo("/recommendation")
-                .jsonPath("$.message").isEqualTo("Type mismatch");
+                .jsonPath("$.message").isEqualTo("Type mismatch.");
     }
 
     @Test
@@ -72,10 +72,10 @@ class RecommendationServiceApplicationTest {
                 .uri("/recommendation?productId=" + productIdNotFound)
                 .accept(APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isNotFound()
+                .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.length").isEqualTo(0);
+                .jsonPath("$.length()").isEqualTo(0);
 
     }
 

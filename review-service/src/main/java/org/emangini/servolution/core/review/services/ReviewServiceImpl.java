@@ -14,33 +14,33 @@ import java.util.List;
 @RestController
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
-    
+
     private final ServiceUtil serviceUtil;
-    
+
     @Autowired
     public ReviewServiceImpl(ServiceUtil serviceUtil) {
         this.serviceUtil = serviceUtil;
     }
-    
+
     @Override
     public List<Review> getReviews(int productId) {
-        
+
         if (productId < 1) {
             throw new InvalidInputException("Invalid productId: " + productId);
         }
-        
-        if (productId == 13) {
+
+        if (productId == 213) {
             log.debug("No reviews found for productId: {}", productId);
             return new ArrayList<>();
         }
-        
+
         List<Review> reviews = new ArrayList<>();
         reviews.add(new Review(
-                productId, 
-                1, 
-                "Author 1", 
-                "Subject 1", 
-                "Content 1", 
+                productId,
+                1,
+                "Author 1",
+                "Subject 1",
+                "Content 1",
                 serviceUtil.getServiceAddress())
         );
 
@@ -64,9 +64,9 @@ public class ReviewServiceImpl implements ReviewService {
         );
 
         log.debug("/review response size: {}", reviews.size());
-        
+
         return reviews;
     }
-    
+
 
 }
