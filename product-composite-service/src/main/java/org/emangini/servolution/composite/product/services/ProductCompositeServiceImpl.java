@@ -67,9 +67,11 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
         // get service address and aggregate them
         String productAddress = product.serviceAddress();
+
         String recommendationAddress =
                 (recommendations != null && !recommendations.isEmpty())
                         ? recommendations.get(0).serviceAddress() : "";
+
         String reviewAddress =
                 (reviews != null && !reviews.isEmpty())
                         ? reviews.get(0).serviceAddress() : "";

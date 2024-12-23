@@ -1,4 +1,4 @@
-package org.emangini.servolution.common.util.http;
+package org.emangini.servolution.util.http;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class HttpErrorInfo {
         this(null, null, null);
     }
 
-    public int getHttpStatus() {
+    public int getStatus() {
         return httpStatus.value();
     }
 

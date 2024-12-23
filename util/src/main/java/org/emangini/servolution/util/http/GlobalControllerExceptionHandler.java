@@ -1,5 +1,6 @@
-package org.emangini.servolution.common.util.http;
+package org.emangini.servolution.util.http;
 
+import lombok.extern.slf4j.Slf4j;
 import org.emangini.servolution.api.exceptions.InvalidInputException;
 import org.emangini.servolution.api.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -7,18 +8,18 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.io.NotActiveException;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
+@RestControllerAdvice
+@Slf4j
 public class GlobalControllerExceptionHandler {
 
     @ResponseStatus(NOT_FOUND)
-    @ExceptionHandler(NotActiveException.class)
-    public @ResponseBody HttpErrorInfo handleNotFoundException(
-            ServerHttpRequest request, NotFoundException exception)
+    @ExceptionHandler(NotFoundException.class)
+    public @ResponseBody HttpErrorInfo handleNotFoundException(ServerHttpRequest request, NotFoundException exception)
     {
             return createHttpErrorInfo(NOT_FOUND, request, exception);
     }
@@ -38,6 +39,8 @@ public class GlobalControllerExceptionHandler {
 
         final String path = request.getPath().pathWithinApplication().value();
         final String message = exception.getMessage();
+
+        log.debug("Returning HTTP status: {} for path: {}, message: {}", httpStatus, path, message);
 
         return new HttpErrorInfo(httpStatus, path, message);
     }

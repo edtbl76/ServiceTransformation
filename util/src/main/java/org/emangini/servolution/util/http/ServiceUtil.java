@@ -1,4 +1,4 @@
-package org.emangini.servolution.common.util.http;
+package org.emangini.servolution.util.http;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

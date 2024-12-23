@@ -9,5 +9,5 @@ public interface ProductService {
             value = "/product/{productId}",
             produces = "application/json"
     )
-     Product getProduct(@PathVariable int productId);
+    Product getProduct(@PathVariable int productId);
 }
