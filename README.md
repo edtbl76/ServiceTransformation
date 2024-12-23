@@ -1,4 +1,13 @@
-# ServiceTransformation v1.0.0
+# ServiceTransformation v1.0.1
+
+## Description
+- Simple Services (local build, local execution)
+- No Persistence
+- Simple, Manually Executed Tests
+
+---
+
+---
 
 ## Version Information
 
