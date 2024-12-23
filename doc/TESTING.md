@@ -4,6 +4,11 @@
 - [Automated Tests (Local) w/ testRunner.sh](#automated-tests-local)
 - [Manual Tests (Docker Endpoint) w/ httpie](#manually-testing-docker)
 - [Manual Tests (Local) w/ curl, httpie](#manual-testing-local)
+  - [Confirming GET w/ curl](#confirm-you-can-retrieve-a-record-curl)
+  - [Confirming GET w/ httpie](#confirm-you-can-receive-a-record-httpie)
+  - [Verifying NotFound (404)](#confirm-notfound)
+  - [Verifying UnprocessableEntity (422)](#verify-that-a-422-unprocessable-entity-for-a-productid-that-is-out-of-range--1)
+  - [Verifying BadRequest (400)](#verify-that-a-400-bad-request-for-a-productid-that-isnt-a-number-invalid-format)
 
 ## Documentation
 - [Readme](../README.md)
