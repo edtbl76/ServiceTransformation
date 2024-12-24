@@ -40,5 +40,16 @@ allprojects {
     }
 }
 
-
+// Microservices-only
+configure(listOf(
+    project(":product-service"),
+    project(":review-service"),
+    project(":recommendation-service"),
+    project(":product-composite-service")
+)) {
+    dependencies {
+        implementation(project(":api"))
+        implementation(project(":util"))
+    }
+}
 
