@@ -1,10 +1,16 @@
 # Running Services / Containers
 
 ## Contents
+
+### Working w/ Containers
+
 - [Containers (Intellij, Docker-Compose)](#starting-containers-intellij-w-docker-compose)
 - [Containers (CLI, Docker-Compose)](#starting-docker-containers-from-the-cli-in-detached-mode)
 - [Containers (CLI, Detached)](#starting-docker-containers-from-the-cli-in-detached-mode)
 - [Containers (CLI)](#starting-docker-containers-from-the-cli)
+- [Docker Tricks](#docker-tricks)
+
+### Working w/ Services
 - [Services (Intellij)](#starting-services-through-ide-tools)
 - [Services (CLI)](#starting-services-w-java-on-the-cli)
 
@@ -169,9 +175,49 @@ CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS
 312778e9cf91   product-service   "java org.springfram…"   3 minutes ago   Up 3 minutes   0.0.0.0:8080->8080/tcp   gracious_hellman
 ```
 
+## Docker Tricks
+
+### Getting only container names from docker ps
+```shell
+docker ps --format {{.Names}}
+```
+```text
+servicetransformation-recommendation-1
+servicetransformation-product-1
+servicetransformation-review-1
+servicetransformation-product-composite-1
+```
+
+### Pruning all images
+```shell
+docker image prune -a
+```
+
+```text
+WARNING! This will remove all images without at least one container associated to them.
+Are you sure you want to continue? [y/N] y
+Deleted Images:
+deleted: sha256:295ead4b726bd5c09b86415cbf8f86964a5dca1bb376083d2725356dd716f839
+deleted: sha256:0908b74f34fae9ebb9bb905f0d2d6b2dc3136053233242f305c884637e227631
+untagged: servicetransformation-review:latest
+deleted: sha256:4b9338d83eee89e55f48aa4c3070ee1744e3ce293d2b2ba5ceff620d44e3790a
+deleted: sha256:188916db65191902328391b79dab4bb9b93654ba7f0597e771392626d6aaf1e4
+untagged: servicetransformation-product-composite:latest
+deleted: sha256:dd7cb2f23566bf7c3a6934d5aedf86f0f81baf213f4c0841c5290fb127a22cd7
+deleted: sha256:d567ecca021f370c1910b335e7b9539e1a82019e19d7cd6983661c7296642e84
+untagged: servicetransformation-product:latest
+deleted: sha256:57aca9c31ee37cf7cf28bcca40ebcf2b0393b8c6857adc8e39d353e973a74ef1
+untagged: servicetransformation-recommendation:latest
+deleted: sha256:0224ee5b31466e063a5b8ea701afa9d0481ce93aa610b7727997e6a5f89b8237
+
+Total reclaimed space: 0B
+```
+
 ---
 
-### Starting Services Through IDE Tools
+
+
+## Starting Services Through IDE Tools
 
 This example uses Intellij's "Services" Tool
 
@@ -181,7 +227,7 @@ This example uses Intellij's "Services" Tool
 
 ---
 
-### Starting Services w/ Java on the CLI
+## Starting Services w/ Java on the CLI
 
 You can run these in the background or open up multiple terminal windows
 

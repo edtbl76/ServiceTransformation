@@ -1,9 +1,10 @@
-# ServiceTransformation v2.1.0
+# ServiceTransformation v2.2.0
 
 ## Table of Contents
 - [Version Information](./doc/VERSION.md)
 - [Release Notes](#release-notes)
 - [Quickstart](#quickstart)
+- [OpenAPI](#openapi)
 
 ## Documentation
 - [Build](./doc/BUILD.md)
@@ -14,17 +15,9 @@
 
 ## Release Notes
 
-- API
-  - added support for `springdoc-openapi-starter-common` to `build.gradle.kts`
-  - adding OpenAPI documentation to `ProductCompositeService` interface. 
+feature: persistence
 
-- ProductCompositeService
-  - added support for `springdoc-openapi-starter-webflux-ai` to `build.gradle.kts`
-  - added OpenAPI Documentation Configuration to `ProductCompositeServiceApplication` and `application.yml`
 
-- Util
-  - added `BadRequestException` and updated `GlobalControllerExceptionHandler` to support it
-  - added `NoArgsConstructor` to support to all exceptions via `lombok`
 
 [Previous Releases](./doc/RELEASE.md)
 
@@ -64,6 +57,10 @@ docker-compose down
 ./testRunner.sh start stop
 ```
 
+## OpenAPI
+
+- Product Composite API Documentation (Web): [http://localhost:8080/openapi/swagger-ui.html](http://localhost:8080/openapi/swagger-ui.html)
+- Product Composite API Documentation (JSON): [http://localhost:8080/openapi/v3/api-docs](http://localhost:8080/openapi/v3/api-docs)
 ---
 
 
