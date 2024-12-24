@@ -9,10 +9,11 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":api"))
+    implementation(project(":util"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation(project(mapOf("path" to ":api")))
-    implementation(project(mapOf("path" to ":util")))
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.7.0")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.projectlombok:lombok")
