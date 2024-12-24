@@ -1,4 +1,4 @@
-# ServiceTransformation v2.0.0
+# ServiceTransformation v2.1.0
 
 ## Table of Contents
 - [Version Information](./doc/VERSION.md)
@@ -14,12 +14,17 @@
 
 ## Release Notes
 
-- Containerized Services (Using Docker)
-  - docker-compose.yml
-  - Dockerfile for all services
-  - updated application.yml for all services to include docker spring-profile
-- updated testRunner.sh to work w/ Docker by default 
-- added doc folder and refactored documentation
+- API
+  - added support for `springdoc-openapi-starter-common` to `build.gradle.kts`
+  - adding OpenAPI documentation to `ProductCompositeService` interface. 
+
+- ProductCompositeService
+  - added support for `springdoc-openapi-starter-webflux-ai` to `build.gradle.kts`
+  - added OpenAPI Documentation Configuration to `ProductCompositeServiceApplication` and `application.yml`
+
+- Util
+  - added `BadRequestException` and updated `GlobalControllerExceptionHandler` to support it
+  - added `NoArgsConstructor` to support to all exceptions via `lombok`
 
 [Previous Releases](./doc/RELEASE.md)
 

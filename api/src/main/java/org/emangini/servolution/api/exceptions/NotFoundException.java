@@ -1,8 +1,9 @@
 package org.emangini.servolution.api.exceptions;
 
-public class NotFoundException extends RuntimeException {
+import lombok.NoArgsConstructor;
 
-    public NotFoundException() { }
+@NoArgsConstructor
+public class NotFoundException extends RuntimeException {
 
     public NotFoundException(String message) {
         super(message);
