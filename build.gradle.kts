@@ -6,7 +6,8 @@ plugins {
 }
 
 allprojects {
-    group = "org.emangini.servolution"
+    group = property("group") as String
+    version = property("projectVersion") as String
 
     apply {
         plugin("java")
@@ -25,19 +26,29 @@ allprojects {
     }
 
     dependencies {
-        implementation("org.springframework.boot:spring-boot-starter-actuator")
-        implementation("org.springframework.boot:spring-boot-starter-webflux")
-        compileOnly("org.projectlombok:lombok:1.18.36")
-        annotationProcessor("org.projectlombok:lombok:1.18.36")
-        testImplementation(platform("org.junit:junit-bom:5.10.0"))
-        testImplementation("org.junit.jupiter:junit-jupiter")
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        testImplementation("io.projectreactor:reactor-test")
+        implementation("org.springframework.boot:spring-boot-starter-actuator:${property("springBootVersion")}")
+        implementation("org.springframework.boot:spring-boot-starter-webflux:${property("springBootVersion")}")
+        implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
+
+        compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
+        compileOnly("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
+
+        annotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
+        annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+        annotationProcessor("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
+
+        testImplementation(platform("org.junit:junit-bom:${property("junitVersion")}"))
+        testImplementation("org.junit.jupiter:junit-jupiter:${property("junitVersion")}")
+        testImplementation("org.springframework.boot:spring-boot-starter-test:${property("springBootVersion")}")
+        testImplementation("io.projectreactor:reactor-test:${property("projectReactorVersion")}")
+
+        testAnnotationProcessor("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
     }
 
     tasks.test {
         useJUnitPlatform()
     }
+
 }
 
 // Microservices-only
@@ -47,9 +58,26 @@ configure(listOf(
     project(":recommendation-service"),
     project(":product-composite-service")
 )) {
+
+
     dependencies {
         implementation(project(":api"))
         implementation(project(":util"))
+    }
+}
+
+// Non-Composite Microservices-only
+configure(listOf(
+    project(":product-service"),
+    project(":review-service"),
+    project(":recommendation-service")
+)) {
+
+
+    dependencies {
+        implementation("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+        testImplementation("org.testcontainers:testcontainers:${property("testcontainersVersion")}")
+        testImplementation("org.testcontainers:junit-jupiter:${property("testcontainersVersion")}")
     }
 }
 

@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.7.0")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:${property("springDocVersion")}")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:${property("springBootVersion")}")
 }
 
 tasks.register("prepareKotlinBuildScriptModel") {}
