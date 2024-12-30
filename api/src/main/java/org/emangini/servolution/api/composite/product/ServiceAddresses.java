@@ -1,13 +1,23 @@
 package org.emangini.servolution.api.composite.product;
 
-public record ServiceAddresses(
-        String compositeAddress,
-        String productAddress,
-        String reviewAddress,
-        String recommendationAddress
-) {
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+public class ServiceAddresses {
+
+    private final String compositeAddress;
+    private final String productAddress;
+    private final String recommendationAddress;
+    private final String reviewAddress;
 
     public ServiceAddresses() {
         this(null, null, null, null);
     }
+
 }

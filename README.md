@@ -1,4 +1,4 @@
-# ServiceTransformation v2.2.0
+# ServiceTransformation v2.3.0
 
 ## Table of Contents
 - [Version Information](./doc/VERSION.md)
@@ -15,7 +15,7 @@
 
 ## Release Notes
 
-feature: persistence
+feature: reactive streams and event-driven architecture
 
 
 

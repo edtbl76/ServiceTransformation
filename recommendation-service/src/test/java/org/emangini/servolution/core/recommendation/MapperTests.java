@@ -38,6 +38,7 @@ public class MapperTests {
         assertEquals(api.getContent(), entity.getContent());
 
         Recommendation apiMappedFromEntity = mapper.entityToApi(entity);
+
         assertEquals(api.getProductId(), apiMappedFromEntity.getProductId());
         assertEquals(api.getRecommendationId(), apiMappedFromEntity.getRecommendationId());
         assertEquals(api.getAuthor(), apiMappedFromEntity.getAuthor());

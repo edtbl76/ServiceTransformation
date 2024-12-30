@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Recommendation {
 
     private int productId;
@@ -16,4 +15,7 @@ public class Recommendation {
     private String content;
     private String serviceAddress;
 
+    public Recommendation() {
+        this(0, 0, null, 0, null, null);
+    }
 }

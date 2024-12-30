@@ -50,6 +50,7 @@ public class MapperTests {
         assertNull(apiMappedFromEntity.getServiceAddress());
     }
 
+    @Test
     void mapperListTests() {
 
         assertNotNull(mapper);

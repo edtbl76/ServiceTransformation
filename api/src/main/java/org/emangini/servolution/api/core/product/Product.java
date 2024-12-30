@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Product {
 
     private int productId;
@@ -14,6 +13,8 @@ public class Product {
     private int weight;
     private String serviceAddress;
 
-
+    public Product() {
+        this(0, null, 0, null);
+    }
 
 }
