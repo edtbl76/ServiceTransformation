@@ -25,24 +25,29 @@
 ./testRunner.sh start stop
 ```
 ```text
-Starting Landscape Tests:  Mon Dec 23 10:59:58 PM EST 2024
+Starting Landscape Tests:  Mon Dec 30 11:29:11 AM EST 2024
 HOST=localhost
 PORT=8080
 Restarting test environment...
 $ docker-compose down --remove-orphans
 -compose up -d
-[+] Running 5/5
+[+] Running 7/7
  ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                         0.1s 
- ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         0.6s 
- ✔ Container servicetransformation-product-1            Started                                                                                                                                                                                                                                         0.4s 
- ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                         0.6s 
- ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                         0.6s 
-Wait for: http://localhost:8080/product-composite/1... , retry #1 , retry #2 DONE, continues...
+ ✔ Container servicetransformation-mongodb-1            Healthy                                                                                                                                                                                                                                         6.7s 
+ ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         1.2s 
+ ✔ Container servicetransformation-mysql-1              Healthy                                                                                                                                                                                                                                        21.7s 
+ ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                        21.9s 
+ ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                         6.8s 
+ ✔ Container servicetransformation-product-1            Started                                                                                                                                                                                                                                         6.7s 
+Wait for: curl -X DELETE http://localhost:8080/product-composite/13... , retry #1 , retry #2 DONE, continues...
+Test OK (HTTP Status: 200)
+Test OK (HTTP Status: 200)
+Test OK (HTTP Status: 200)
 Test OK (HTTP Status: 200)
 Test OK (actual value: 1)
 Test OK (actual value: 3)
 Test OK (actual value: 3)
-Test OK (HTTP Status: 404, {"timestamp":"2024-12-24T04:00:05.807133864Z","path":"/product-composite/13","message":"No product found for productId: 13","status":404,"error":"Not Found"})
+Test OK (HTTP Status: 404, {"timestamp":"2024-12-30T16:29:42.325574312Z","path":"/product-composite/13","message":"No product found for productId: 13","status":404,"error":"Not Found"})
 Test OK (actual value: No product found for productId: 13)
 Test OK (HTTP Status: 200)
 Test OK (actual value: 113)
@@ -52,9 +57,9 @@ Test OK (HTTP Status: 200)
 Test OK (actual value: 213)
 Test OK (actual value: 3)
 Test OK (actual value: 0)
-Test OK (HTTP Status: 422, {"timestamp":"2024-12-24T04:00:06.028044579Z","path":"/product-composite/-1","message":"Invalid productId: -1","status":422,"error":"Unprocessable Entity"})
+Test OK (HTTP Status: 422, {"timestamp":"2024-12-30T16:29:42.543046486Z","path":"/product-composite/-1","message":"Invalid productId: -1","status":422,"error":"Unprocessable Entity"})
 Test OK (actual value: "Invalid productId: -1")
-Test OK (HTTP Status: 400, {"timestamp":"2024-12-24T04:00:06.064+00:00","path":"/product-composite/invalidProductId","status":400,"error":"Bad Request","requestId":"432ebcae-7","message":"Type mismatch."})
+Test OK (HTTP Status: 400, {"timestamp":"2024-12-30T16:29:42.575+00:00","path":"/product-composite/invalidProductId","status":400,"error":"Bad Request","requestId":"4882ae1e-15","message":"Type mismatch."})
 Test OK (actual value: "Type mismatch.")
 Swagger/OpenAPI tests
 Test OK (HTTP Status: 302, )
@@ -65,13 +70,15 @@ Test OK (actual value: 3.0.1)
 Test OK (HTTP Status: 200)
 Tests completed, shutting down test environment...
 $ docker-compose down
-[+] Running 5/5
+[+] Running 7/6
+ ✔ Container servicetransformation-product-composite-1  Removed                                                                                                                                                                                                                                         2.4s 
  ✔ Container servicetransformation-recommendation-1     Removed                                                                                                                                                                                                                                         2.4s 
- ✔ Container servicetransformation-product-composite-1  Removed                                                                                                                                                                                                                                         2.3s 
- ✔ Container servicetransformation-product-1            Removed                                                                                                                                                                                                                                         2.2s 
- ✔ Container servicetransformation-review-1             Removed                                                                                                                                                                                                                                         2.4s 
+ ✔ Container servicetransformation-product-1            Removed                                                                                                                                                                                                                                         2.4s 
+ ✔ Container servicetransformation-review-1             Removed                                                                                                                                                                                                                                         2.3s 
+ ✔ Container servicetransformation-mysql-1              Removed                                                                                                                                                                                                                                         1.2s 
+ ✔ Container servicetransformation-mongodb-1            Removed                                                                                                                                                                                                                                         0.3s 
  ✔ Network servicetransformation_default                Removed                                                                                                                                                                                                                                         0.1s 
-End, all tests OK:  Mon Dec 23 11:00:08 PM EST 2024
+End, all tests OK:  Mon Dec 30 11:29:46 AM EST 2024
 ```
 
 ---
