@@ -7,6 +7,12 @@ services:
           memory: 512M
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   recommendation:
     build: recommendation-service
@@ -16,6 +22,12 @@ services:
           memory: 512M
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   review:
     build: review-service
@@ -25,6 +37,11 @@ services:
           memory: 512M
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USR}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PWD}
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   product-composite:
     build: product-composite-service
@@ -36,3 +53,40 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+
+  mongodb:
+    image: mongo:7.0.16
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "27017:27017"
+    command: mongod
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USR}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PWD}
+    healthcheck:
+      test: "mongosh --username ${MONGODB_USR} --password ${MONGODB_PWD} --eval 'db.stats().ok'"
+      interval: 5s
+      timeout: 2s
+      retries: 60
+
+  mysql:
+    image: mysql:8.0.33
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PWD}
+      - MYSQL_DATABASE=reviewdb
+      - MYSQL_USER=${MYSQL_USR}
+      - MYSQL_PASSWORD=${MYSQL_PWD}
+    healthcheck:
+      test: "/usr/bin/mysql --user=${MYSQL_USR} --password=${MYSQL_PWD} --execute=\"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60

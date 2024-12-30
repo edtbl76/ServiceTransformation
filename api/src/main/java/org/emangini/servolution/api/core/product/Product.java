@@ -1,8 +1,19 @@
 package org.emangini.servolution.api.core.product;
 
-public record Product(int productId, String name, int weight, String serviceAddress) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    public Product() {
-        this(0, null, 0, null);
-    }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Product {
+
+    private int productId;
+    private String name;
+    private int weight;
+    private String serviceAddress;
+
+
+
 }
