@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Review {
 
     private int productId;
@@ -15,5 +14,9 @@ public class Review {
     private String subject;
     private String content;
     private String serviceAddress;
+
+    public Review() {
+        this(0, 0, null, null, null, null);
+    }
 
 }

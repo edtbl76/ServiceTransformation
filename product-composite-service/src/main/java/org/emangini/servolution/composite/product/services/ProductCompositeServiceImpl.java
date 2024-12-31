@@ -9,12 +9,15 @@ import org.emangini.servolution.api.composite.product.ServiceAddresses;
 import org.emangini.servolution.api.core.product.Product;
 import org.emangini.servolution.api.core.recommendation.Recommendation;
 import org.emangini.servolution.api.core.review.Review;
-import org.emangini.servolution.api.exceptions.NotFoundException;
 import org.emangini.servolution.util.http.ServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.logging.Level.FINE;
 
 @RestController
 @Slf4j
@@ -31,76 +34,100 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
 
     @Override
-    public void createProduct(ProductAggregate body) {
+    public Mono<Void> createProduct(ProductAggregate body) {
 
         try {
-            log.debug("createCompositeProduct: creates a new composite entity for productId: {}", body.productId());
+            // TODO handle raw use of Mono
+            List<Mono> monos = new ArrayList<>();
+            log.debug("createCompositeProduct: creates a new composite entity for productId: {}", body.getProductId());
 
             Product product = new Product(
-                    body.productId(),
-                    body.name(),
-                    body.weight(),
+                    body.getProductId(),
+                    body.getName(),
+                    body.getWeight(),
                     null);
-            integration.createProduct(product);
+            monos.add(integration.createProduct(product));
 
-            if (body.recommendations() != null) {
-                body.recommendations().forEach(recommendationSummary -> {
+            if (body.getRecommendations() != null) {
+                body.getRecommendations().forEach(recommendationSummary -> {
                     Recommendation recommendation = new Recommendation(
-                            body.productId(),
-                            recommendationSummary.recommendationId(),
-                            recommendationSummary.author(),
-                            recommendationSummary.rate(),
-                            recommendationSummary.content(),
+                            body.getProductId(),
+                            recommendationSummary.getRecommendationId(),
+                            recommendationSummary.getAuthor(),
+                            recommendationSummary.getRate(),
+                            recommendationSummary.getContent(),
                             null
                     );
-                    integration.createRecommendation(recommendation);
+                    monos.add(integration.createRecommendation(recommendation));
                 });
             }
 
-            if (body.reviews() != null) {
-                body.reviews().forEach(reviewSummary -> {
+            if (body.getReviews() != null) {
+                body.getReviews().forEach(reviewSummary -> {
                     Review review = new Review(
-                            body.productId(),
-                            reviewSummary.reviewId(),
-                            reviewSummary.author(),
-                            reviewSummary.subject(),
-                            reviewSummary.content(),
+                            body.getProductId(),
+                            reviewSummary.getReviewId(),
+                            reviewSummary.getAuthor(),
+                            reviewSummary.getSubject(),
+                            reviewSummary.getContent(),
                             null
                     );
-                    integration.createReview(review);
+                    monos.add(integration.createReview(review));
                 });
             }
+
+            log.debug("createCompositeProduct: composite entities created for productId: {}", body.getProductId());
+
+            // TODO handle duplicate error messages
+            return Mono.zip(objects -> "", monos.toArray(new Mono[0]))
+                    .doOnError(throwable ->
+                            log.warn("createCompositeProduct failed: {}", throwable.toString()))
+                    .then();
         } catch (RuntimeException e) {
-            log.warn("createCompositeProduct failed", e);
+            log.warn("createCompositeProduct failed: {}", e.toString());
             throw e;
         }
     }
 
     @Override
-    public ProductAggregate getProduct(int productId) {
+    public Mono<ProductAggregate> getProduct(int productId) {
 
-        log.debug("getCompositeProduct: lookup a product aggregate for productId: {}", productId);
+        log.info("calling getCompositeProduct for product with id: {}", productId);
 
-        Product product = integration.getProduct(productId);
-        if (product == null) {
-            throw new NotFoundException("No product found for productId: " + productId);
-        }
+        // TODO handle unchecked casts
+        return Mono.zip(objects -> createProductAggregate(
+                                (Product) objects[0],
+                                (List<Recommendation>) objects[1],
+                                (List<Review>) objects[2],
+                                serviceUtil.getServiceAddress()),
+                        integration.getProduct(productId),
+                        integration.getRecommendations(productId).collectList(),
+                        integration.getReviews(productId).collectList())
+                .doOnError(throwable -> log.warn("getCompositeProduct failed: {}", throwable.toString()))
+                .log(log.getName(), FINE);
 
-        List<Recommendation> recommendations = integration.getRecommendations(productId);
-        List<Review> reviews = integration.getReviews(productId);
-        log.debug("getCompositeProduct: aggregate entity found for productId: {}", productId);
-
-        return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
     }
 
     @Override
-    public void deleteProduct(int productId) {
-        log.debug("deleteCompositeProduct: Deletes a product aggregate for productId: {}", productId);
-        integration.deleteProduct(productId);
-        integration.deleteRecommendations(productId);
-        integration.deleteReviews(productId);
+    public Mono<Void> deleteProduct(int productId) {
 
-        log.debug("deleteCompositeProduct: aggregate entities deleted for productId: {}", productId);
+        try {
+            log.debug("deleteCompositeProduct: Deletes a product composite for productId: {}", productId);
+
+            // TODO: calling zip on void object has no effect
+            return Mono.zip(objects -> "",
+                            integration.deleteProduct(productId),
+                            integration.deleteRecommendations(productId),
+                            integration.deleteReviews(productId))
+                    .doOnError(throwable -> log.warn("delete failed: {}", throwable.toString()))
+                    .log(log.getName(), FINE)
+                    .then();
+
+        } catch (RuntimeException e) {
+            log.warn("deleteCompositeProduct failed: {}", e.toString());
+            throw e;
+        }
+
     }
 
     private ProductAggregate createProductAggregate(

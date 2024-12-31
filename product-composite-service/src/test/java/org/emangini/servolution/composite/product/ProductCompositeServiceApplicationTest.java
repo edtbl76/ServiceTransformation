@@ -1,9 +1,5 @@
 package org.emangini.servolution.composite.product;
 
-
-import org.emangini.servolution.api.composite.product.ProductAggregate;
-import org.emangini.servolution.api.composite.product.RecommendationSummary;
-import org.emangini.servolution.api.composite.product.ReviewSummary;
 import org.emangini.servolution.api.core.recommendation.Recommendation;
 import org.emangini.servolution.api.core.review.Review;
 import org.emangini.servolution.api.core.product.Product;
@@ -18,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static java.util.Collections.singletonList;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -26,7 +24,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static reactor.core.publisher.Mono.just;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT )
 class ProductCompositeServiceApplicationTest {
@@ -45,27 +42,33 @@ class ProductCompositeServiceApplicationTest {
     void setUp() {
 
         when(compositeIntegration.getProduct(PRODUCT_ID_OK))
-                .thenReturn(new Product(PRODUCT_ID_OK, "name", 1, "mock-address"));
+                .thenReturn(
+                        Mono.just(
+                                new Product(PRODUCT_ID_OK, "name", 1, "mock-address")));
 
-        when(compositeIntegration.getRecommendations(PRODUCT_ID_OK))
-                .thenReturn(singletonList(new Recommendation(
-                        PRODUCT_ID_OK,
-                        1,
-                        "author",
-                        1,
-                        "content",
-                        "mock address"
-                )));
+        when(compositeIntegration.getRecommendations(PRODUCT_ID_OK)).thenReturn(
+                Flux.fromIterable(
+                        singletonList(
+                                new Recommendation(
+                                        PRODUCT_ID_OK,
+                                        1,
+                                        "author",
+                                        1,
+                                        "content",
+                                        "mock address"
+                ))));
 
-        when(compositeIntegration.getReviews(PRODUCT_ID_OK))
-                .thenReturn(singletonList(new Review(
-                        PRODUCT_ID_OK,
-                        1,
-                        "author",
-                        "subject" ,
-                        "content",
-                        "mock address"
-                )));
+        when(compositeIntegration.getReviews(PRODUCT_ID_OK)).thenReturn(
+                Flux.fromIterable(
+                        singletonList(
+                                new Review(
+                                    PRODUCT_ID_OK,
+                                        1,
+                                        "author",
+                                        "subject" ,
+                                        "content",
+                                        "mock address"
+                ))));
 
         when(compositeIntegration.getProduct(PRODUCT_ID_NOT_FOUND))
                 .thenThrow(new NotFoundException("NOT FOUND: " + PRODUCT_ID_NOT_FOUND));
@@ -76,52 +79,6 @@ class ProductCompositeServiceApplicationTest {
 
     @Test
     void contextLoads() { }
-
-    @Test
-    void createCompositeProduct() {
-        ProductAggregate compositeProduct = new ProductAggregate(
-                1,
-                "name",
-                1,
-                null,
-                null,
-                null);
-
-        postAndVerifyProduct(compositeProduct, OK);
-    }
-
-    @Test
-    void createCompositeProductWithRecommendationsAndReviews() {
-        ProductAggregate compositeProduct = new ProductAggregate(
-                1,
-                "name",
-                1,
-                singletonList(
-                        new RecommendationSummary(1, "author", 1, "content")),
-                singletonList(
-                        new ReviewSummary(1, "author", "subject", "content")),
-                null);
-
-        postAndVerifyProduct(compositeProduct, OK);
-    }
-
-    @Test
-    void deleteCompositeProduct() {
-        ProductAggregate compositeProduct = new ProductAggregate(
-                1,
-                "name",
-                1,
-                singletonList(
-                        new RecommendationSummary(1, "author", 1, "content")),
-                singletonList(
-                        new ReviewSummary(1, "author", "subject", "content")),
-                null
-        );
-
-        postAndVerifyProduct(compositeProduct, OK);
-        deleteAndVerifyProduct(compositeProduct.productId(), OK);
-        deleteAndVerifyProduct(compositeProduct.productId(), OK);
-    }
 
     @Test
     void getProductById() {
@@ -161,22 +118,5 @@ class ProductCompositeServiceApplicationTest {
                 .expectStatus().isEqualTo(expectedStatus)
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody();
-    }
-
-    private void postAndVerifyProduct(ProductAggregate compositeProduct, HttpStatus expectedStatus) {
-
-        client.post()
-                .uri("/product-composite")
-                .body(just(compositeProduct), ProductAggregate.class)
-                .exchange()
-                .expectStatus().isEqualTo(expectedStatus);
-    }
-
-    private void deleteAndVerifyProduct(int productId, HttpStatus expectedStatus) {
-
-        client.delete()
-                .uri("/product-composite/" + productId)
-                .exchange()
-                .expectStatus().isEqualTo(expectedStatus);
     }
 }

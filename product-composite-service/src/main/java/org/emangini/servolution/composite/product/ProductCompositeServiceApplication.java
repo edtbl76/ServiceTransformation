@@ -5,13 +5,25 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import lombok.extern.slf4j.Slf4j;
+import org.emangini.servolution.composite.product.services.ProductCompositeIntegration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.health.CompositeReactiveHealthContributor;
+import org.springframework.boot.actuate.health.ReactiveHealthContributor;
+import org.springframework.boot.actuate.health.ReactiveHealthIndicator;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.client.RestTemplate;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
+@Slf4j
 @SpringBootApplication
 @ComponentScan("org.emangini")
 public class ProductCompositeServiceApplication {
@@ -66,9 +78,39 @@ public class ProductCompositeServiceApplication {
                 .externalDocs(externalDocumentation);
     }
 
+    private final Integer threadPoolSize;
+    private final Integer taskQueueSize;
+
+    @Autowired
+    public ProductCompositeServiceApplication(
+            @Value("${app.threadPoolSize:10}")
+            Integer threadPoolSize,
+            @Value("${app.queueCapacity:100}")
+            Integer taskQueueSize
+    ) {
+        this.threadPoolSize = threadPoolSize;
+        this.taskQueueSize = taskQueueSize;
+    }
+
     @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
+    public Scheduler publishEventScheduler() {
+        log.info("Creating Publish Event Scheduler with connectionPoolSize = {}", threadPoolSize);
+        return Schedulers.newBoundedElastic(threadPoolSize, taskQueueSize, "publish-event-pool");
+    }
+
+    @Autowired
+    ProductCompositeIntegration integration;
+
+    @Bean
+    ReactiveHealthContributor coreServices() {
+
+        final Map<String, ReactiveHealthIndicator> healthIndicatorRegistry = new LinkedHashMap<>();
+
+        healthIndicatorRegistry.put("product", integration::getProductHealth);
+        healthIndicatorRegistry.put("recommendation", integration::getRecommendationHealth);
+        healthIndicatorRegistry.put("review", integration::getReviewHealth);
+
+        return CompositeReactiveHealthContributor.fromMap(healthIndicatorRegistry);
     }
 
     public static void main(String[] args) {

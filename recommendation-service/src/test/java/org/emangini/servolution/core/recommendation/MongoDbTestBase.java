@@ -6,8 +6,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import static org.emangini.servolution.util.http.GradlePropertiesReader.getGradleProperty;
-
 public abstract class MongoDbTestBase {
 
     public static final String MONGO_DOCKER_IMAGE_NAME = "mongo:7.0.16";

@@ -1,53 +1,67 @@
 # Testing the System
 
 ## Contents
-- [Automated Tests (Docker-Compose) w/ testRunner.sh]()
-- [Automated Tests (Local) w/ testRunner.sh](#automated-tests-local)
-- [Manual Tests (Docker Endpoint) w/ httpie](#manually-testing-docker)
-- [Manual Tests (Local) w/ curl, httpie](#manual-testing-local)
-  - [Confirming GET w/ curl](#confirm-you-can-retrieve-a-record-curl)
-  - [Confirming GET w/ httpie](#confirm-you-can-receive-a-record-httpie)
-  - [Verifying NotFound (404)](#confirm-notfound)
-  - [Verifying UnprocessableEntity (422)](#verify-that-a-422-unprocessable-entity-for-a-productid-that-is-out-of-range--1)
-  - [Verifying BadRequest (400)](#verify-that-a-400-bad-request-for-a-productid-that-isnt-a-number-invalid-format)
+
+- [Executing Test Runner](#executing-test-runner)
+- [Gradle (CLI, Intellij)](TESTING-GRADLE.md)
+
 
 ## Documentation
 - [Readme](../README.md)
-- [Version Information](VERSION.md)
 - [Release Notes](RELEASE.md)
 - [Building](BUILD.md)
 - [Running Services](RUNNING.md)
 
 
 ---
-## Automated Tests (Docker-Compose)
+## Executing Test Runner
+
+By default, `testRunner.sh` is set to test using containers.
+
+You can execute tests against local instances of the services by prepending the execution statement prepended by the 
+local port
+(`PORT=7000 ./testRunner.sh`)
+However, you will also need to start all the support containers (mongo, rabbit, mysql etc.) 
+
 ```shell
 ./testRunner.sh start stop
 ```
 ```text
-Starting Landscape Tests:  Mon Dec 30 11:29:11 AM EST 2024
+(base) ~/IdeaProjects/ServiceTransformation git:[develop]
+./testRunner.sh start stop
+Starting Landscape Tests:  Tue Dec 31 12:39:52 PM EST 2024
 HOST=localhost
 PORT=8080
 Restarting test environment...
 $ docker-compose down --remove-orphans
 -compose up -d
-[+] Running 7/7
- ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                         0.1s 
- ✔ Container servicetransformation-mongodb-1            Healthy                                                                                                                                                                                                                                         6.7s 
- ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         1.2s 
- ✔ Container servicetransformation-mysql-1              Healthy                                                                                                                                                                                                                                        21.7s 
- ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                        21.9s 
+[+] Running 8/8
+ ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                         0.0s 
+ ✔ Container servicetransformation-mysql-1              Healthy                                                                                                                                                                                                                                        21.1s 
+ ✔ Container servicetransformation-rabbitmq-1           Healthy                                                                                                                                                                                                                                         6.6s 
+ ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         0.6s 
+ ✔ Container servicetransformation-mongodb-1            Healthy                                                                                                                                                                                                                                         6.1s 
+ ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                        21.2s 
+ ✔ Container servicetransformation-product-1            Started                                                                                                                                                                                                                                         6.8s 
  ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                         6.8s 
- ✔ Container servicetransformation-product-1            Started                                                                                                                                                                                                                                         6.7s 
-Wait for: curl -X DELETE http://localhost:8080/product-composite/13... , retry #1 , retry #2 DONE, continues...
-Test OK (HTTP Status: 200)
-Test OK (HTTP Status: 200)
-Test OK (HTTP Status: 200)
+Wait for: curl http://localhost:8080/actuator/health... , retry #1 , retry #2 {"status":"UP","components":{"coreServices":{"status":"UP","components":{"product":{"status":"UP"},"recommendation":{"status":"UP"},"review":{"status":"UP"}}},"diskSpace":{"status":"UP","details":{"total":101129359360,"free":45631238144,"threshold":10485760,"path":"/application/.","exists":true}},"ping":{"status":"UP"},"rabbit":{"status":"UP","details":{"version":"4.0.5"}},"ssl":{"status":"UP","details":{"validChains":[],"invalidChains":[]}}}}DONE, continues...
+Test OK (HTTP Status: 202, )
+Test OK (actual value: 202)
+Test OK (HTTP Status: 202, )
+Test OK (actual value: 202)
+Test OK (HTTP Status: 202, )
+Test OK (actual value: 202)
+Waiting for messages to be processed...
 Test OK (HTTP Status: 200)
 Test OK (actual value: 1)
 Test OK (actual value: 3)
 Test OK (actual value: 3)
-Test OK (HTTP Status: 404, {"timestamp":"2024-12-30T16:29:42.325574312Z","path":"/product-composite/13","message":"No product found for productId: 13","status":404,"error":"Not Found"})
+All messages have been processed
+Test OK (HTTP Status: 200)
+Test OK (actual value: 1)
+Test OK (actual value: 3)
+Test OK (actual value: 3)
+Test OK (HTTP Status: 404, {"timestamp":"2024-12-31T17:40:22.625730645Z","path":"/product-composite/13","message":"No product found for productId: 13","status":404,"error":"Not Found"})
 Test OK (actual value: No product found for productId: 13)
 Test OK (HTTP Status: 200)
 Test OK (actual value: 113)
@@ -57,9 +71,9 @@ Test OK (HTTP Status: 200)
 Test OK (actual value: 213)
 Test OK (actual value: 3)
 Test OK (actual value: 0)
-Test OK (HTTP Status: 422, {"timestamp":"2024-12-30T16:29:42.543046486Z","path":"/product-composite/-1","message":"Invalid productId: -1","status":422,"error":"Unprocessable Entity"})
+Test OK (HTTP Status: 422, {"timestamp":"2024-12-31T17:40:22.817137272Z","path":"/product-composite/-1","message":"Invalid productId: -1","status":422,"error":"Unprocessable Entity"})
 Test OK (actual value: "Invalid productId: -1")
-Test OK (HTTP Status: 400, {"timestamp":"2024-12-30T16:29:42.575+00:00","path":"/product-composite/invalidProductId","status":400,"error":"Bad Request","requestId":"4882ae1e-15","message":"Type mismatch."})
+Test OK (HTTP Status: 400, {"timestamp":"2024-12-31T17:40:22.848+00:00","path":"/product-composite/invalidProductId","status":400,"error":"Bad Request","requestId":"9ca9d7b3-16","message":"Type mismatch."})
 Test OK (actual value: "Type mismatch.")
 Swagger/OpenAPI tests
 Test OK (HTTP Status: 302, )
@@ -70,394 +84,18 @@ Test OK (actual value: 3.0.1)
 Test OK (HTTP Status: 200)
 Tests completed, shutting down test environment...
 $ docker-compose down
-[+] Running 7/6
- ✔ Container servicetransformation-product-composite-1  Removed                                                                                                                                                                                                                                         2.4s 
- ✔ Container servicetransformation-recommendation-1     Removed                                                                                                                                                                                                                                         2.4s 
- ✔ Container servicetransformation-product-1            Removed                                                                                                                                                                                                                                         2.4s 
- ✔ Container servicetransformation-review-1             Removed                                                                                                                                                                                                                                         2.3s 
- ✔ Container servicetransformation-mysql-1              Removed                                                                                                                                                                                                                                         1.2s 
+[+] Running 8/8
+ ✔ Container servicetransformation-recommendation-1     Removed                                                                                                                                                                                                                                         4.7s 
+ ✔ Container servicetransformation-product-composite-1  Removed                                                                                                                                                                                                                                         4.4s 
+ ✔ Container servicetransformation-product-1            Removed                                                                                                                                                                                                                                         4.7s 
+ ✔ Container servicetransformation-review-1             Removed                                                                                                                                                                                                                                         2.7s 
+ ✔ Container servicetransformation-mysql-1              Removed                                                                                                                                                                                                                                         1.4s 
+ ✔ Container servicetransformation-rabbitmq-1           Removed                                                                                                                                                                                                                                         1.3s 
  ✔ Container servicetransformation-mongodb-1            Removed                                                                                                                                                                                                                                         0.3s 
  ✔ Network servicetransformation_default                Removed                                                                                                                                                                                                                                         0.1s 
-End, all tests OK:  Mon Dec 30 11:29:46 AM EST 2024
+End, all tests OK:  Tue Dec 31 12:40:29 PM EST 2024
 ```
 
 ---
 
-## Automated Tests (Local)
-With the microservices started **locally**, execute the following command
 
-```shell
-PORT=7000 ./testRunner.sh
-```
-```shell
-(base) ~/IdeaProjects/ServiceTransformation git:[main]
-./testRunner.sh
-HOST=localhost
-PORT=7000
-Test OK (HTTP Status: 200)
-Test OK (actual value: 1)
-Test OK (actual value: 3)
-Test OK (actual value: 3)
-Test OK (HTTP Status: 404, {"timestamp":"2024-12-23T09:11:23.9658777-05:00","path":"/product-composite/13","message":"No product found for productId: 13","status":404,"error":"Not Found"})
-Test OK (actual value: No product found for productId: 13)
-Test OK (HTTP Status: 200)
-Test OK (actual value: 113)
-Test OK (actual value: 0)
-Test OK (actual value: 3)
-Test OK (HTTP Status: 200)
-Test OK (actual value: 213)
-Test OK (actual value: 3)
-Test OK (actual value: 0)
-Test OK (HTTP Status: 422, {"timestamp":"2024-12-23T09:11:24.130368707-05:00","path":"/product-composite/-1","message":"Invalid productId: -1","status":422,"error":"Unprocessable Entity"})
-Test OK (actual value: "Invalid productId: -1")
-Test OK (HTTP Status: 400, {"timestamp":"2024-12-23T14:11:24.162+00:00","path":"/product-composite/invalidProductId","status":400,"error":"Bad Request","requestId":"b4fbfffe-6","message":"Type mismatch.","trace":"org.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: \"invalidProductId\"\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:87)\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53)\n\tat org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:866)\n\tat org.springframework.web.reactive.result.method.annotation.AbstractNamedValueArgumentResolver.applyConversion(AbstractNamedValueArgumentResolver.java:209)\n\tat org.springframework.web.reactive.result.method.annotation.AbstractNamedValueArgumentResolver.lambda$resolveArgument$0(AbstractNamedValueArgumentResolver.java:117)\n\tat reactor.core.publisher.FluxFlatMap.trySubscribeScalarMap(FluxFlatMap.java:153)\n\tat reactor.core.publisher.MonoFlatMap.subscribeOrReturn(MonoFlatMap.java:53)\n\tat reactor.core.publisher.InternalMonoOperator.subscribe(InternalMonoOperator.java:63)\n\tat reactor.core.publisher.MonoZip$ZipCoordinator.request(MonoZip.java:220)\n\tat reactor.core.publisher.MonoFlatMap$FlatMapMain.request(MonoFlatMap.java:194)\n\tat reactor.core.publisher.MonoIgnoreThen$ThenIgnoreMain.onSubscribe(MonoIgnoreThen.java:135)\n\tat reactor.core.publisher.MonoFlatMap$FlatMapMain.onSubscribe(MonoFlatMap.java:117)\n\tat reactor.core.publisher.MonoZip.subscribe(MonoZip.java:129)\n\tat reactor.core.publisher.InternalMonoOperator.subscribe(InternalMonoOperator.java:76)\n\tat reactor.core.publisher.MonoDefer.subscribe(MonoDefer.java:53)\n\tat reactor.core.publisher.MonoIgnoreThen$ThenIgnoreMain.subscribeNext(MonoIgnoreThen.java:241)\n\tat reactor.core.publisher.MonoIgnoreThen$ThenIgnoreMain.onComplete(MonoIgnoreThen.java:204)\n\tat reactor.core.publisher.MonoFlatMap$FlatMapMain.onComplete(MonoFlatMap.java:189)\n\tat reactor.core.publisher.Operators.complete(Operators.java:137)\n\tat reactor.core.publisher.MonoZip.subscribe(MonoZip.java:121)\n\tat reactor.core.publisher.Mono.subscribe(Mono.java:4576)\n\tat reactor.core.publisher.MonoIgnoreThen$ThenIgnoreMain.subscribeNext(MonoIgnoreThen.java:265)\n\tat reactor.core.publisher.MonoIgnoreThen.subscribe(MonoIgnoreThen.java:51)\n\tat reactor.core.publisher.InternalMonoOperator.subscribe(InternalMonoOperator.java:76)\n\tat reactor.core.publisher.MonoFlatMap$FlatMapMain.onNext(MonoFlatMap.java:165)\n\tat reactor.core.publisher.FluxOnErrorResume$ResumeSubscriber.onNext(FluxOnErrorResume.java:79)\n\tat reactor.core.publisher.FluxSwitchIfEmpty$SwitchIfEmptySubscriber.onNext(FluxSwitchIfEmpty.java:74)\n\tat reactor.core.publisher.MonoNext$NextSubscriber.onNext(MonoNext.java:82)\n\tat reactor.core.publisher.FluxConcatMapNoPrefetch$FluxConcatMapNoPrefetchSubscriber.innerNext(FluxConcatMapNoPrefetch.java:259)\n\tat reactor.core.publisher.FluxConcatMap$ConcatMapInner.onNext(FluxConcatMap.java:865)\n\tat reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:129)\n\tat reactor.core.publisher.MonoPeekTerminal$MonoTerminalPeekSubscriber.onNext(MonoPeekTerminal.java:180)\n\tat reactor.core.publisher.Operators$ScalarSubscription.request(Operators.java:2571)\n\tat reactor.core.publisher.MonoPeekTerminal$MonoTerminalPeekSubscriber.request(MonoPeekTerminal.java:139)\n\tat reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.request(FluxMapFuseable.java:171)\n\tat reactor.core.publisher.Operators$MultiSubscriptionSubscriber.request(Operators.java:2331)\n\tat reactor.core.publisher.FluxConcatMapNoPrefetch$FluxConcatMapNoPrefetchSubscriber.request(FluxConcatMapNoPrefetch.java:339)\n\tat reactor.core.publisher.MonoNext$NextSubscriber.request(MonoNext.java:108)\n\tat reactor.core.publisher.Operators$MultiSubscriptionSubscriber.set(Operators.java:2367)\n\tat reactor.core.publisher.Operators$MultiSubscriptionSubscriber.onSubscribe(Operators.java:2241)\n\tat reactor.core.publisher.MonoNext$NextSubscriber.onSubscribe(MonoNext.java:70)\n\tat reactor.core.publisher.FluxConcatMapNoPrefetch$FluxConcatMapNoPrefetchSubscriber.onSubscribe(FluxConcatMapNoPrefetch.java:164)\n\tat reactor.core.publisher.FluxIterable.subscribe(FluxIterable.java:201)\n\tat reactor.core.publisher.FluxIterable.subscribe(FluxIterable.java:83)\n\tat reactor.core.publisher.InternalMonoOperator.subscribe(InternalMonoOperator.java:76)\n\tat reactor.core.publisher.MonoDefer.subscribe(MonoDefer.java:53)\n\tat reactor.core.publisher.Mono.subscribe(Mono.java:4576)\n\tat reactor.core.publisher.MonoIgnoreThen$ThenIgnoreMain.subscribeNext(MonoIgnoreThen.java:265)\n\tat reactor.core.publisher.MonoIgnoreThen.subscribe(MonoIgnoreThen.java:51)\n\tat reactor.core.publisher.InternalMonoOperator.subscribe(InternalMonoOperator.java:76)\n\tat reactor.core.publisher.MonoDeferContextual.subscribe(MonoDeferContextual.java:55)\n\tat reactor.netty.http.server.HttpServer$HttpServerHandle.onStateChange(HttpServer.java:1211)\n\tat reactor.netty.ReactorNetty$CompositeConnectionObserver.onStateChange(ReactorNetty.java:716)\n\tat reactor.netty.transport.ServerTransport$ChildObserver.onStateChange(ServerTransport.java:486)\n\tat reactor.netty.http.server.HttpServerOperations.handleDefaultHttpRequest(HttpServerOperations.java:843)\n\tat reactor.netty.http.server.HttpServerOperations.onInboundNext(HttpServerOperations.java:776)\n\tat reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:115)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat reactor.netty.http.server.HttpTrafficHandler.channelRead(HttpTrafficHandler.java:267)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:436)\n\tat io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)\n\tat io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)\n\tat io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)\n\tat io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1357)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)\n\tat io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)\n\tat io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:868)\n\tat io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:799)\n\tat io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:501)\n\tat io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:399)\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)\n\tat io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\n\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\n\tat java.base/java.lang.Thread.run(Thread.java:833)\nCaused by: java.lang.NumberFormatException: For input string: \"invalidProductId\"\n\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)\n\tat java.base/java.lang.Integer.parseInt(Integer.java:668)\n\tat java.base/java.lang.Integer.valueOf(Integer.java:999)\n\tat org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:201)\n\tat org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115)\n\tat org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:439)\n\tat org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:412)\n\tat org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:161)\n\tat org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:80)\n\t... 81 more\n"})
-Test OK (actual value: "Type mismatch.")
-End, all tests OK:  Mon Dec 23 09:11:24 AM EST 2024
-
-```
-
----
-
----
-
-## Manually Testing (Docker)
-
-### Testing Product Service Directly
-```shell
-http http://localhost:8080/product/3
-```
-
-```text
-HTTP/1.1 200 OK
-Content-Length: 92
-Content-Type: application/json
-
-{
-    "name": "name-3",
-    "productId": 3,
-    "serviceAddress": "312778e9cf91/172.17.0.2:8080",
-    "weight": 123
-}
-```
-
-### Testing Product Composite
-```shell
-http http://localhost:8080/product-composite/123 --unsorted
-```
-Notice that the **service addresses** are different from the local services (the ports)
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 628
-
-{
-    "productId": 123,
-    "name": "name-123",
-    "weight": 123,
-    "recommendations": [
-        {
-            "recommendationId": 1,
-            "author": "Author 1",
-            "rate": 1
-        },
-        {
-            "recommendationId": 2,
-            "author": "Author 2",
-            "rate": 2
-        },
-        {
-            "recommendationId": 3,
-            "author": "Author 3",
-            "rate": 3
-        }
-    ],
-    "reviews": [
-        {
-            "reviewId": 1,
-            "author": "Author 1",
-            "subject": "Subject 1"
-        },
-        {
-            "reviewId": 2,
-            "author": "Author 2",
-            "subject": "Subject 2"
-        },
-        {
-            "reviewId": 3,
-            "author": "Author 3",
-            "subject": "Subject 3"
-        }
-    ],
-    "serviceAddresses": {
-        "compositeAddress": "d4e6252e08cf/172.20.0.5:8080",
-        "productAddress": "d95022979ed4/172.20.0.3:8080",
-        "reviewAddress": "04d47707b78a/172.20.0.4:8080",
-        "recommendationAddress": "a76a2b3a7df8/172.20.0.2:8080"
-    }
-}
-```
-
-
-
----
-## Manual Testing (Local)
-
-### Confirm you can retrieve a record (curl)
-
-```shell
-curl http://localhost:7000/product-composite/1 -s | jq
-```
-```text
-{
-  "productId": 1,
-  "name": "name-1",
-  "weight": 123,
-  "recommendations": [
-    {
-      "recommendationId": 1,
-      "author": "Author 1",
-      "rate": 1
-    },
-    {
-      "recommendationId": 2,
-      "author": "Author 2",
-      "rate": 2
-    },
-    {
-      "recommendationId": 3,
-      "author": "Author 3",
-      "rate": 3
-    }
-  ],
-  "reviews": [
-    {
-      "reviewId": 1,
-      "author": "Author 1",
-      "subject": "Subject 1"
-    },
-    {
-      "reviewId": 2,
-      "author": "Author 2",
-      "subject": "Subject 2"
-    },
-    {
-      "reviewId": 3,
-      "author": "Author 3",
-      "subject": "Subject 3"
-    }
-  ],
-  "serviceAddresses": {
-    "compositeAddress": "pop-os/127.0.1.1:7000",
-    "productAddress": "pop-os/127.0.1.1:7001",
-    "reviewAddress": "pop-os/127.0.1.1:7003",
-    "recommendationAddress": "pop-os/127.0.1.1:7002"
-  }
-}
-```
----
-
-### Confirm you can receive a record (Httpie)
-
-This is my preference because it shows the header and pretty-prints.
-
-```shell
-http http://localhost:7000/product-composite/1 --unsorted
-```
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 596
-
-{
-    "productId": 1,
-    "name": "name-1",
-    "weight": 123,
-    "recommendations": [
-        {
-            "recommendationId": 1,
-            "author": "Author 1",
-            "rate": 1
-        },
-        {
-            "recommendationId": 2,
-            "author": "Author 2",
-            "rate": 2
-        },
-        {
-            "recommendationId": 3,
-            "author": "Author 3",
-            "rate": 3
-        }
-    ],
-    "reviews": [
-        {
-            "reviewId": 1,
-            "author": "Author 1",
-            "subject": "Subject 1"
-        },
-        {
-            "reviewId": 2,
-            "author": "Author 2",
-            "subject": "Subject 2"
-        },
-        {
-            "reviewId": 3,
-            "author": "Author 3",
-            "subject": "Subject 3"
-        }
-    ],
-    "serviceAddresses": {
-        "compositeAddress": "pop-os/127.0.1.1:7000",
-        "productAddress": "pop-os/127.0.1.1:7001",
-        "reviewAddress": "pop-os/127.0.1.1:7003",
-        "recommendationAddress": "pop-os/127.0.1.1:7002"
-    }
-}
-```
----
-
-### Confirm NotFound
-
- 1. Verify that a 404 (Not Found) is returned for a non existing productId
-```shell
-http http://localhost:7000/product-composite/13 --unsorted;
-```
-```text
-HTTP/1.1 404 Not Found
-Content-Type: application/json
-Content-Length: 162
-
-{
-    "timestamp": "2024-12-23T00:28:16.620539873-05:00",
-    "path": "/product-composite/13",
-    "message": "No product found for productId: 13",
-    "status": 404,
-    "error": "Not Found"
-}
-```
-
-2. Verify that there aren't any recommendations for productId 113
-```shell
-http http://localhost:7000/product-composite/113 --unsorted;
-```
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 424
-
-{
-  "productId": 113,
-  "name": "name-113",
-  "weight": 123,
-  "recommendations": [],
-  "reviews": [
-    {
-      "reviewId": 1,
-      "author": "Author 1",
-      "subject": "Subject 1"
-    },
-    {
-      "reviewId": 2,
-      "author": "Author 2",
-      "subject": "Subject 2"
-    },
-    {
-      "reviewId": 3,
-      "author": "Author 3",
-      "subject": "Subject 3"
-    }
-  ],
-  "serviceAddresses": {
-    "compositeAddress": "pop-os/127.0.1.1:7000",
-    "productAddress": "pop-os/127.0.1.1:7001",
-    "reviewAddress": "pop-os/127.0.1.1:7003",
-    "recommendationAddress": ""
-  }
-}
-```
- 3. Verify that there aren't any reviews for productId 213
-```shell
-http http://localhost:7000/product-composite/213 --unsorted;
-```
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 409
-
-{
-    "productId": 213,
-    "name": "name-213",
-    "weight": 123,
-    "recommendations": [
-        {
-            "recommendationId": 1,
-            "author": "Author 1",
-            "rate": 1
-        },
-        {
-            "recommendationId": 2,
-            "author": "Author 2",
-            "rate": 2
-        },
-        {
-            "recommendationId": 3,
-            "author": "Author 3",
-            "rate": 3
-        }
-    ],
-    "reviews": [],
-    "serviceAddresses": {
-        "compositeAddress": "pop-os/127.0.1.1:7000",
-        "productAddress": "pop-os/127.0.1.1:7001",
-        "reviewAddress": "",
-        "recommendationAddress": "pop-os/127.0.1.1:7002"
-    }
-}
-```
----
-
-### Verify that a 422 (Unprocessable Entity) for a productId that is out of range (-1)
-
-```shell
-http http://localhost:7000/product-composite/-1 --unsorted
-```
-```shell
-HTTP/1.1 422 Unprocessable Entity
-Content-Type: application/json
-Content-Length: 159
-
-{
-    "timestamp": "2024-12-23T00:39:46.01206139-05:00",
-    "path": "/product-composite/-1",
-    "message": "Invalid productId: -1",
-    "status": 422,
-    "error": "Unprocessable Entity"
-}
-```
----
-
-### Verify that a 400 (Bad Request) for a productId that isn't a number (invalid format)
-
-```shell
-http http://localhost:7000/product-composite/invalidProductId --unsorted
-```
-(I truncated the stack trace. You're going to see the whole ugly thing when you execute it...)
-```shell
-(base) ~/IdeaProjects/ServiceTransformation git:[main]
-http http://localhost:7000/product-composite/invalidProductId --unsorted
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-Content-Length: 9107
-
-{
-    "timestamp": "2024-12-23T05:43:05.505+00:00",
-    "path": "/product-composite/invalidProductId",
-    "status": 400,
-    "error": "Bad Request",
-    "requestId": "7c94c632-36",
-    "message": "Type mismatch.",
-    "trace": "<Java Stack Trace Truncated>"
-}
-```
-
----

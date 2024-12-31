@@ -16,7 +16,6 @@
 
 ## Documentation
 - [Readme](../README.md)
-- [Version Information](VERSION.md)
 - [Release Notes](RELEASE.md)
 - [Building](BUILD.md)
 - [Testing Services](TESTING.md)

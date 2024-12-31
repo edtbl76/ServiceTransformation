@@ -5,8 +5,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import static org.emangini.servolution.util.http.GradlePropertiesReader.getGradleProperty;
-
 public abstract class MySqlTestBase {
 
     private static final String MYSQL_DOCKER_IMAGE_NAME = "mysql:8.0.33";

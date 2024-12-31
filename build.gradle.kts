@@ -29,6 +29,8 @@ allprojects {
         implementation("org.springframework.boot:spring-boot-starter-actuator:${property("springBootVersion")}")
         implementation("org.springframework.boot:spring-boot-starter-webflux:${property("springBootVersion")}")
         implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
+        implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit:${property("springCloudVersion")}")
+        implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka:${property("springCloudVersion")}")
 
         compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
         compileOnly("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
@@ -37,16 +39,29 @@ allprojects {
         annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
         annotationProcessor("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
 
+        testCompileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
+
         testImplementation(platform("org.junit:junit-bom:${property("junitVersion")}"))
         testImplementation("org.junit.jupiter:junit-jupiter:${property("junitVersion")}")
         testImplementation("org.springframework.boot:spring-boot-starter-test:${property("springBootVersion")}")
         testImplementation("io.projectreactor:reactor-test:${property("projectReactorVersion")}")
+        testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder:${property("springCloudVersion")}")
 
+        testAnnotationProcessor("org.projectlombok:lombok:${property("lombokVersion")}")
         testAnnotationProcessor("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudBomVersion")}")
+        }
     }
 
     tasks.test {
         useJUnitPlatform()
+        environment("DOCKER_HOST", "unix://home/edmangini/.docker/desktop/docker.sock")
+        environment("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
+        environment("TESTCONTAINERS_RYUK_DISABLED", "true")
     }
 
 }
