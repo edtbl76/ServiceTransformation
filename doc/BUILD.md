@@ -13,10 +13,11 @@
 
 ## Documentation
 - [Readme](../README.md)
+- [Building](BUILD.md)
 - [Release Notes](RELEASE.md)
 - [Running Services](RUNNING.md)
 - [Testing Services](TESTING.md)
-
+- [Support](SUPPORT.md)
 ---
 
 ## Build Project (Gradle)
