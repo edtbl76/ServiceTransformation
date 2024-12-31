@@ -20,10 +20,12 @@
 
 ---
 ## Documentation
-- [Build](../doc/BUILD.md)
-- [Running](../doc/RUNNING.md)
-- [Testing](../doc/TESTING.md)
-
+- [Readme](../README.md)
+- [Building](BUILD.md)
+- [Release Notes](RELEASE.md)
+- [Running Services](RUNNING.md)
+- [Testing Services](TESTING.md)
+- [Support](SUPPORT.md)
 ---
 ## Testing Gradle from CLI
 
@@ -63,9 +65,11 @@ Navigate to `./build/reports/tests/test/index.html`
 ```NOTE: The build directory will be nested in a submodule, not in the parent build directory.```
 
 Clicking on the HTML file will show the raw HTML, but in Intellij a pop-up allows you to launch it into a browser.
+
 ![build-report-test-summary.png](img/build-report-test-summary.png)
 
 Some test classes will allow you to select Standard Output to see the actual results
+
 ![build-report-test-summary-standard-output.png](img/build-report-test-summary-standard-output.png)
 ---
 

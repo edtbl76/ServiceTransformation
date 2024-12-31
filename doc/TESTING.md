@@ -8,10 +8,11 @@
 
 ## Documentation
 - [Readme](../README.md)
-- [Release Notes](RELEASE.md)
 - [Building](BUILD.md)
+- [Release Notes](RELEASE.md)
 - [Running Services](RUNNING.md)
-
+- [Testing Services](TESTING.md)
+- [Support](SUPPORT.md)
 
 # TODO 
 - Create a step-by-step for testRunner tests

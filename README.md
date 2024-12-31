@@ -7,16 +7,50 @@
 - [OpenAPI](#openapi)
 
 ## Documentation
-- [Build](./doc/BUILD.md)
-- [Running](./doc/RUNNING.md)
-- [Testing](./doc/TESTING.md)
-
+- [Readme](../README.md)
+- [Building](./doc/BUILD.md)
+- [Release Notes](./doc/RELEASE.md)
+- [Running Services](./doc/RUNNING.md)
+- [Testing Services](./doc/TESTING.md)
+- [Support](./doc/SUPPORT.md)
 ---
 
 ## Release Notes
 
 feature: reactive streams and event-driven architecture
 
+[Project]
+- added spring cloud messaging dependencies v4.2.0
+- documentation refactoring
+- added messaging support and Spring Actuator / HealthCheck support for testRunner.sh
+- added support for rabbitmq and kafka to docker-compose; created additional profiles for streamed partitioning 
+
+[API]
+- converted Java records to lombok-based classes for ProductAggregate, RecommendationSummary, ReviewSummary, ServiceAddresses
+- updated APIs to support Project Reactor (Reactive/Asynchronous) for all 4 API services (ProductCompositeService, ProductService, RecommendationService, ReviewService)
+- replaced NoArgsConstructors w/ custom for Product, Recommendation, Review Data POJOs
+- created EventType (Create, Delete) to support event-driven architecture
+- added custom Local/ZonedDateTime Serializers to solve bug w/ Jackson
+- added EventProcessingException 
+
+[Product-Composite]
+- added Scheduler support for concurrency (SpringBootApplication, Integration layer)
+  - @Lazy loaded into integration layer to avoid circular dependency issues
+- added support for Spring Actuator HealthCheck API
+- added Project Reactor (Reactive Streams) support to integration and implementation layers
+- added spring cloud streams/messaging support for rabbitmq, and additional profiles for streamed partitioning and kafka=
+- added tests for messaging/events
+- updated tests for reactive operations
+
+[Product, Recommendation, Review]
+- updated Mongo to Reactive Mongo support (Product, Recommendation) 
+- updated Entities to have custom String repr
+- updated Repositories for reactive crud operations
+- added Message Processor Configuration class
+- updated *ServiceImpl for reactive code
+- - added spring cloud streams/messaging support for rabbitmq, and additional profiles for streamed partitioning and kafka
+- added tests for messaging/events
+- updated tests for reactive code (StepVerifier)
 
 
 [Previous Releases](./doc/RELEASE.md)

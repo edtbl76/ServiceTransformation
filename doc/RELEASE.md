@@ -1,6 +1,6 @@
 # Release Notes
 
-- [v2.2.0](#v220---persistence) [(v2.2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.2.0)
+- [v2.2.0](#v220---persistence-mongo-mysql) [(v2.2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.2.0)
 - [v2.1.0](#v210---openapi) [(v2.1 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.1.0)
 - [v2.0.0](#v200---docker-compose) [(v2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.0.0)
 - [v1.0.2](#v102---springboot-java-microservices) [(v1 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v1.0.2)
@@ -9,7 +9,7 @@
 
 
 ---
-## v2.2.0 - Persistence
+## v2.2.0 - Persistence (Mongo, MySQL)
 
 [Project]
 - created .env to store EV for persistence stores
