@@ -18,6 +18,11 @@
   - [3. Running Tests For Single Class (Project Window)](#3-running-tests-for-single-class-file-project-window)
   - [4. Running Tests From Test Class File](#4-running-tests-from-a-test-class)
 
+---
+## Documentation
+- [Build](../doc/BUILD.md)
+- [Running](../doc/RUNNING.md)
+- [Testing](../doc/TESTING.md)
 
 ---
 ## Testing Gradle from CLI
