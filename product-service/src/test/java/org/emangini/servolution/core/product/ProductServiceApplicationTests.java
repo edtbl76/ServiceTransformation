@@ -29,7 +29,10 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.MediaType.*;
 
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = RANDOM_PORT,
+        properties = {"eureka.client.enabled=false"}
+)
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
     @Autowired

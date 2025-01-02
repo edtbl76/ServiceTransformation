@@ -31,6 +31,7 @@ allprojects {
         implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
         implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit:${property("springCloudVersion")}")
         implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka:${property("springCloudVersion")}")
+        implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${property("springCloudVersion")}")
 
         compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
         compileOnly("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
@@ -85,7 +86,8 @@ configure(listOf(
 configure(listOf(
     project(":product-service"),
     project(":review-service"),
-    project(":recommendation-service")
+    project(":recommendation-service"),
+    project(":discovery")
 )) {
 
 

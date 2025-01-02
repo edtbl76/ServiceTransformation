@@ -1,9 +1,9 @@
-# ServiceTransformation v2.3.0
+# ServiceTransformation v3.0.0
 
 ## Table of Contents
 - [Release Notes](#release-notes)
 - [Quickstart](#quickstart)
-- [Links](#openapi)
+- [Links](#links)
 
 ## Documentation
 - [Readme](README.md)
@@ -16,43 +16,25 @@
 
 ## Release Notes
 
-feature: reactive streams and event-driven architecture
+- **Service Discovery with Eureka**  
+  All microservices are now integrated with Eureka for centralized service discovery.  
+  Each service is configured to automatically register with Eureka upon startup. This simplifies inter-service communication and scalability.
 
-[Project]
-- added spring cloud messaging dependencies v4.2.0
-- documentation refactoring
-- added messaging support and Spring Actuator / HealthCheck support for testRunner.sh
-- added support for rabbitmq and kafka to docker-compose; created additional profiles for streamed partitioning 
+- **Improved Properties Configuration**  
+  Updated application properties across all microservices to enable seamless integration with Eureka.
 
-[API]
-- converted Java records to lombok-based classes for ProductAggregate, RecommendationSummary, ReviewSummary, ServiceAddresses
-- updated APIs to support Project Reactor (Reactive/Asynchronous) for all 4 API services (ProductCompositeService, ProductService, RecommendationService, ReviewService)
-- replaced NoArgsConstructors w/ custom for Product, Recommendation, Review Data POJOs
-- created EventType (Create, Delete) to support event-driven architecture
-- added custom Local/ZonedDateTime Serializers to solve bug w/ Jackson
-- added EventProcessingException 
+- **Simplified Service Endpoints**  
+  Service URLs within the product composite service have been simplified to leverage Eureka's service registry, improving maintainability and scalability.
 
-[Product-Composite]
-- added Scheduler support for concurrency (SpringBootApplication, Integration layer)
-  - @Lazy loaded into integration layer to avoid circular dependency issues
-- added support for Spring Actuator HealthCheck API
-- added Project Reactor (Reactive Streams) support to integration and implementation layers
-- added spring cloud streams/messaging support for rabbitmq, and additional profiles for streamed partitioning and kafka=
-- added tests for messaging/events
-- updated tests for reactive operations
+- **Post-Construction Validation**  
+  Beans now utilize a post-construction validation step to ensure the application context is properly initialized.
 
-[Product, Recommendation, Review]
-- updated Mongo to Reactive Mongo support (Product, Recommendation) 
-- updated Entities to have custom String repr
-- updated Repositories for reactive crud operations
-- added Message Processor Configuration class
-- updated *ServiceImpl for reactive code
-- - added spring cloud streams/messaging support for rabbitmq, and additional profiles for streamed partitioning and kafka
-- added tests for messaging/events
-- updated tests for reactive code (StepVerifier)
+
 
 
 [Previous Releases](./doc/RELEASE.md)
+
+---
 
 ## Quickstart
 
@@ -91,6 +73,18 @@ docker-compose down
 ```
 
 ## Links
+
+NOTE: Environment must be up to reach these.
+
+- [Eureka (Service Discovery)](#eureka)
+- [OpenAPI](#openapi)
+- [RabbitMQ (Messaging)](#rabbitmq)
+- [Spring Actuator (HealthCheck)](#spring-actuator)
+
+### Eureka
+
+- [Eureka Administration](http://localhost:8761/)
+- [Eureka XML Manifest](http://localhost:8761/eureka/apps)
 
 ### OpenAPI
 

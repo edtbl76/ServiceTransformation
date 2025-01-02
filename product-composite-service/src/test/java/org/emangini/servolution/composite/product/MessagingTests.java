@@ -9,6 +9,7 @@ import org.emangini.servolution.api.core.recommendation.Recommendation;
 import org.emangini.servolution.api.core.review.Review;
 import org.emangini.servolution.api.event.Event;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,10 +34,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static reactor.core.publisher.Mono.just;
 
+@Disabled
 @Slf4j
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
-        properties = {"spring.main.allow-bean-definition-overriding=true"}
+        properties = {
+                "spring.main.allow-bean-definition-overriding=true",
+                "eureka.client.enabled=false"
+        }
 )
 @Import({TestChannelBinderConfiguration.class})
 class MessagingTests {

@@ -4,7 +4,7 @@
 ## Contents
 
 - [Starting the test environment](#start-the-environment)
-- [Checking Liveness w/ Spring Actuator](#spring-actuator)
+- [Checking Liveness](#verifying-system-health)
 - [Verifying a Normal Request](#verifying-a-normal-request)
 - [Verifying Behavior for Nonexistent Product](#verify-behavior-for-nonexistent-productid)
 - [Verifying Request for Product w/o Recommendations](#verify-request-for-product-without-recommendations)
@@ -35,84 +35,28 @@ To start the test environment and seed data w/o stopping containers:
 
 ---
 
-## Spring Actuator
-
+## Verifying System Health
 The healthcheck ensures that the the Spring Services are up. 
 
 NOTE: Links to Spring Actuator endpoints can be found in the [README](../README.md).
 
-- [1. curl healthcheck](#1-curl-healthcheck)
-- [2. httpie healthcheck](#2-httpie-healthcheck)
+- [1. Actuator Healthcheck](#1-actuator-healthcheck)
+- [2. Validating Service Discovery](#2-validating-service-discovery)
+- [3. Validating 200](#3-validate-200-service-discovery)
+- [4. Validating Number of Registered Instances](#4-validate-number-of-registered-instances)
 
-### 1. Curl HealthCheck
+
+### 1. Actuator Healthcheck
+
 
 ```shell
+## curl
 curl http://localhost:8080/actuator/health -s | jq
-```
-```text
-{
-  "status": "UP",
-  "components": {
-    "binders": {
-      "status": "UP",
-      "components": {
-        "rabbit": {
-          "status": "UP",
-          "details": {
-            "version": "4.0.5"
-          }
-        }
-      }
-    },
-    "coreServices": {
-      "status": "UP",
-      "components": {
-        "product": {
-          "status": "UP"
-        },
-        "recommendation": {
-          "status": "UP"
-        },
-        "review": {
-          "status": "UP"
-        }
-      }
-    },
-    "diskSpace": {
-      "status": "UP",
-      "details": {
-        "total": 101129359360,
-        "free": 45118107648,
-        "threshold": 10485760,
-        "path": "/application/.",
-        "exists": true
-      }
-    },
-    "ping": {
-      "status": "UP"
-    },
-    "rabbit": {
-      "status": "UP",
-      "details": {
-        "version": "4.0.5"
-      }
-    },
-    "ssl": {
-      "status": "UP",
-      "details": {
-        "validChains": [],
-        "invalidChains": []
-      }
-    }
-  }
-}
-```
-
-### 2. httpie healthcheck
-
-```shell
+## httpie
 http http://localhost:8080/actuator/health --unsorted
 ```
+
+NOTE: Output shows httpie only
 ```text
 HTTP/1.1 200 OK
 Content-Type: application/vnd.spring-boot.actuator.v3+json
@@ -175,6 +119,263 @@ Content-Length: 543
     }
 }
 ```
+
+### 2. Validating Service Discovery
+
+
+```shell
+## curl
+curl -H "accept:application/json" localhost:8761/eureka/apps -s | jq
+## httpie
+http GET :8761/eureka/apps Accept:application/json --unsorted
+```
+
+NOTE: if you don't add the accept:application/json part then this will show in XML (very ugly!)
+```text
+HTTP/1.1 200 
+Content-Encoding: gzip
+Content-Type: application/json
+Content-Length: 812
+Date: Sat, 04 Jan 2025 05:32:39 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "applications": {
+        "versions__delta": "1",
+        "apps__hashcode": "UP_4_",
+        "application": [
+            {
+                "name": "PRODUCT-COMPOSITE",
+                "instance": [
+                    {
+                        "instanceId": "63e64c1e0f74:product-composite:8080",
+                        "hostName": "63e64c1e0f74",
+                        "app": "PRODUCT-COMPOSITE",
+                        "ipAddr": "172.22.0.2",
+                        "status": "UP",
+                        "overriddenStatus": "UNKNOWN",
+                        "port": {
+                            "$": 8080,
+                            "@enabled": "true"
+                        },
+                        "securePort": {
+                            "$": 443,
+                            "@enabled": "false"
+                        },
+                        "countryId": 1,
+                        "dataCenterInfo": {
+                            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+                            "name": "MyOwn"
+                        },
+                        "leaseInfo": {
+                            "renewalIntervalInSecs": 5,
+                            "durationInSecs": 5,
+                            "registrationTimestamp": 1735968482997,
+                            "lastRenewalTimestamp": 1735968683390,
+                            "evictionTimestamp": 0,
+                            "serviceUpTimestamp": 1735968482998
+                        },
+                        "metadata": {
+                            "management.port": "8080"
+                        },
+                        "homePageUrl": "http://63e64c1e0f74:8080/",
+                        "statusPageUrl": "http://63e64c1e0f74:8080/actuator/info",
+                        "healthCheckUrl": "http://63e64c1e0f74:8080/actuator/health",
+                        "vipAddress": "product-composite",
+                        "secureVipAddress": "product-composite",
+                        "isCoordinatingDiscoveryServer": "false",
+                        "lastUpdatedTimestamp": "1735968482998",
+                        "lastDirtyTimestamp": "1735968482896",
+                        "actionType": "ADDED"
+                    }
+                ]
+            },
+            {
+                "name": "PRODUCT",
+                "instance": [
+                    {
+                        "instanceId": "bb772802bb6a:product:8080",
+                        "hostName": "bb772802bb6a",
+                        "app": "PRODUCT",
+                        "ipAddr": "172.22.0.8",
+                        "status": "UP",
+                        "overriddenStatus": "UNKNOWN",
+                        "port": {
+                            "$": 8080,
+                            "@enabled": "true"
+                        },
+                        "securePort": {
+                            "$": 443,
+                            "@enabled": "false"
+                        },
+                        "countryId": 1,
+                        "dataCenterInfo": {
+                            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+                            "name": "MyOwn"
+                        },
+                        "leaseInfo": {
+                            "renewalIntervalInSecs": 5,
+                            "durationInSecs": 5,
+                            "registrationTimestamp": 1735968484684,
+                            "lastRenewalTimestamp": 1735968684986,
+                            "evictionTimestamp": 0,
+                            "serviceUpTimestamp": 1735968484684
+                        },
+                        "metadata": {
+                            "management.port": "8080"
+                        },
+                        "homePageUrl": "http://bb772802bb6a:8080/",
+                        "statusPageUrl": "http://bb772802bb6a:8080/actuator/info",
+                        "healthCheckUrl": "http://bb772802bb6a:8080/actuator/health",
+                        "vipAddress": "product",
+                        "secureVipAddress": "product",
+                        "isCoordinatingDiscoveryServer": "false",
+                        "lastUpdatedTimestamp": "1735968484684",
+                        "lastDirtyTimestamp": "1735968484638",
+                        "actionType": "ADDED"
+                    }
+                ]
+            },
+            {
+                "name": "REVIEW",
+                "instance": [
+                    {
+                        "instanceId": "36a92fd5c3f3:review:8080",
+                        "hostName": "36a92fd5c3f3",
+                        "app": "REVIEW",
+                        "ipAddr": "172.22.0.9",
+                        "status": "UP",
+                        "overriddenStatus": "UNKNOWN",
+                        "port": {
+                            "$": 8080,
+                            "@enabled": "true"
+                        },
+                        "securePort": {
+                            "$": 443,
+                            "@enabled": "false"
+                        },
+                        "countryId": 1,
+                        "dataCenterInfo": {
+                            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+                            "name": "MyOwn"
+                        },
+                        "leaseInfo": {
+                            "renewalIntervalInSecs": 5,
+                            "durationInSecs": 5,
+                            "registrationTimestamp": 1735968499310,
+                            "lastRenewalTimestamp": 1735968684589,
+                            "evictionTimestamp": 0,
+                            "serviceUpTimestamp": 1735968499310
+                        },
+                        "metadata": {
+                            "management.port": "8080"
+                        },
+                        "homePageUrl": "http://36a92fd5c3f3:8080/",
+                        "statusPageUrl": "http://36a92fd5c3f3:8080/actuator/info",
+                        "healthCheckUrl": "http://36a92fd5c3f3:8080/actuator/health",
+                        "vipAddress": "review",
+                        "secureVipAddress": "review",
+                        "isCoordinatingDiscoveryServer": "false",
+                        "lastUpdatedTimestamp": "1735968499310",
+                        "lastDirtyTimestamp": "1735968499280",
+                        "actionType": "ADDED"
+                    }
+                ]
+            },
+            {
+                "name": "RECOMMENDATION",
+                "instance": [
+                    {
+                        "instanceId": "70c53f6d941b:recommendation:8080",
+                        "hostName": "70c53f6d941b",
+                        "app": "RECOMMENDATION",
+                        "ipAddr": "172.22.0.7",
+                        "status": "UP",
+                        "overriddenStatus": "UNKNOWN",
+                        "port": {
+                            "$": 8080,
+                            "@enabled": "true"
+                        },
+                        "securePort": {
+                            "$": 443,
+                            "@enabled": "false"
+                        },
+                        "countryId": 1,
+                        "dataCenterInfo": {
+                            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+                            "name": "MyOwn"
+                        },
+                        "leaseInfo": {
+                            "renewalIntervalInSecs": 5,
+                            "durationInSecs": 5,
+                            "registrationTimestamp": 1735968484619,
+                            "lastRenewalTimestamp": 1735968684933,
+                            "evictionTimestamp": 0,
+                            "serviceUpTimestamp": 1735968484620
+                        },
+                        "metadata": {
+                            "management.port": "8080"
+                        },
+                        "homePageUrl": "http://70c53f6d941b:8080/",
+                        "statusPageUrl": "http://70c53f6d941b:8080/actuator/info",
+                        "healthCheckUrl": "http://70c53f6d941b:8080/actuator/health",
+                        "vipAddress": "recommendation",
+                        "secureVipAddress": "recommendation",
+                        "isCoordinatingDiscoveryServer": "false",
+                        "lastUpdatedTimestamp": "1735968484620",
+                        "lastDirtyTimestamp": "1735968484573",
+                        "actionType": "ADDED"
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+### 3. Validate 200 (Service Discovery)
+
+Commands
+```shell
+## curl
+curl localhost:8761/eureka/apps -s --head
+## httpie
+http :8761/eureka/apps -h
+```
+
+Result (httpie provides more information)
+NOTE: (AS mentioned before, the default Content-Type is xml, you can see this here.)
+```text
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 952
+Content-Type: application/xml
+Date: Sat, 04 Jan 2025 05:36:26 GMT
+Keep-Alive: timeout=60
+```
+
+### 4. Validate Number of Registered Instances
+
+Commands
+```shell
+## curl
+curl -H "accept:application/json" localhost:8761/eureka/apps -s | jq ".applications.application | length"
+
+## httpie
+http :8761/eureka/apps Accept:application/json --unsorted | jq ".applications.application | length"
+```
+
+Result:
+(You can go back up to the 'full' output to validate)
+```text
+4
+```
+
+
+---
+
 ## Verifying a Normal Request
 
 - [1. Validate 200](#1-validate-httpstatuscode-is-200)

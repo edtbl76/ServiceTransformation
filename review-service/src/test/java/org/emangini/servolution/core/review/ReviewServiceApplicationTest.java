@@ -27,7 +27,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
         webEnvironment = RANDOM_PORT,
         properties = {
                 "spring.cloud.stream.default.binder=rabbit",
-                "logging.level.org.emangini.servolution=debug"
+                "logging.level.org.emangini.servolution=debug",
+                "eureka.client.enabled=false"
         }
 )
 class ReviewServiceApplicationTest extends MySqlTestBase {
