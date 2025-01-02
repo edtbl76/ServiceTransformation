@@ -1,13 +1,12 @@
 # ServiceTransformation v2.3.0
 
 ## Table of Contents
-- [Version Information](./doc/VERSION.md)
 - [Release Notes](#release-notes)
 - [Quickstart](#quickstart)
-- [OpenAPI](#openapi)
+- [Links](#openapi)
 
 ## Documentation
-- [Readme](../README.md)
+- [Readme](README.md)
 - [Building](./doc/BUILD.md)
 - [Release Notes](./doc/RELEASE.md)
 - [Running Services](./doc/RUNNING.md)
@@ -91,10 +90,36 @@ docker-compose down
 ./testRunner.sh start stop
 ```
 
-## OpenAPI
+## Links
 
-- Product Composite API Documentation (Web): [http://localhost:8080/openapi/swagger-ui.html](http://localhost:8080/openapi/swagger-ui.html)
-- Product Composite API Documentation (JSON): [http://localhost:8080/openapi/v3/api-docs](http://localhost:8080/openapi/v3/api-docs)
+### OpenAPI
+
+### Spring Actuator
+
+- [/actuator](http://localhost:8080/actuator)
+  - [/actuator/beans](http://localhost:8080/actuator/beans)
+  - [/actuator/bindings](http://localhost:8080/actuator/bindings)
+  - [/actuator/caches](http://localhost:8080/actuator/caches) 
+  - [/actuator/channels](http://localhost:8080/actuator/channels)
+  - [/actuator/conditions](http://localhost:8080/actuator/conditions)
+  - [/actuator/configprops](http://localhost:8080/actuator/configprops)
+  - [/actuator/env](http://localhost:8080/actuator/env)
+  - [/actuator/functions](http://localhost:8080/actuator/functions)
+  - [/actuator/health](http://localhost:8080/actuator/health)
+  - [/actuator/heapdump](http://localhost:8080/actuator/heapdump)
+  - [/actuator/info](http://localhost:8080/actuator/info)
+  - [/actuator/integrationgraph](http://localhost:8080/actuator/integrationgraph)
+  - [/actuator/loggers](http://localhost:8080/actuator/loggers)
+  - [/actuator/mappings](http://localhost:8080/actuator/mappings)
+  - [/actuator/threaddump](http://localhost:8080/actuator/threaddump)
+  - [/actuator/metrics](http://localhost:8080/actuator/metrics)
+  - [/actuator/sbom](http://localhost:8080/actuator/sbom)
+  - [/actuator/scheduledtasks](http://localhost:8080/actuator/scheduledtasks)
+  
+
+
+
+
 ---
 
 
