@@ -4,6 +4,7 @@
 
 - [Executing Test Runner](#executing-test-runner)
 - [Gradle (CLI, Intellij)](TESTING-GRADLE.md)
+- [Manually Testing (based on testRunner.sh)](TESTING-TESTRUNNER.md)
 
 
 ## Documentation
