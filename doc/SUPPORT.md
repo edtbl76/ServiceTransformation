@@ -4,12 +4,11 @@
 ## Contents
 
 - [Docker](#docker)
-  - [Validating Docker Process](#validating-docker-process)
-  - [Filtering container names from 'docker ps'](#filtering-containers-names-from-docker-ps)
-  - [Pruning all images](#pruning-all-images)
-  - [Viewing Logs](#viewing-logs-in-docker)
 - [Docker-Compose](#docker-compose)
-  - [Viewing Logs](#viewing-logs-in-docker-compose)
+- [Kafka](#kafka)
+- [MySQL](#mysql)
+
+
 
 ## Documentation
 - [Readme](../README.md)
@@ -22,6 +21,11 @@
 ---
 
 ## Docker
+
+- [Validating Docker Process](#validating-docker-process)
+- [Filtering container names from 'docker ps'](#filtering-containers-names-from-docker-ps)
+- [Pruning all images](#pruning-all-images)
+- [Viewing Logs](#viewing-logs-in-docker)
 
 ### Validating Docker Process
 ```shell
@@ -97,6 +101,8 @@ docker logs product-service-instance001 -f
 
 ## Docker-Compose
 
+- [Viewing Logs](#viewing-logs-in-docker-compose)
+
 ### Viewing Logs in docker-compose
 ```shell
 docker-compose logs -f
@@ -120,4 +126,190 @@ review-1             | 2024-12-23T17:44:36.451Z  INFO 1 --- [           main] o.
 review-1             | 2024-12-23T17:44:37.890Z  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
 review-1             | 2024-12-23T17:44:38.404Z  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080 (http)
 review-1             | 2024-12-23T17:44:38.418Z  INFO 1 --- [           main] o.e.s.c.review.ReviewServiceApplication  : Started ReviewServiceApplication in 2.427 seconds (process running for 2.759)
+```
+
+## Kafka
+
+
+### Getting list of topics
+
+```shell
+/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
+
+```text
+__consumer_offsets
+error.products.productsGroup
+error.recommendations.recommendationsGroup
+error.reviews.reviewsGroup
+products
+recommendations
+reviews
+```
+
+
+
+---
+## MySQL
+
+```NOTE: Commands that require root privileges will be annotated```
+
+- [Logging in to MySQL Remotely](#logging-in-to-mysql-remotely)
+- [Show Databases](#show-databases)
+- [Show Users](#show-users)
+- [Show Grants](#show-grants)
+- [Show Tables](#show-tables)
+- [Select Database](#select-database)
+- [Show Schema](#show-schema)
+
+### Logging in to MySQL Remotely
+
+As `mysql-user-dev`
+```shell
+mysql --user=mysql-user-dev --password=mysql-pass-dev --host=127.0.0.1 -P 3306 reviewd
+```
+
+As `root`
+```shell
+mysql --user=root --password=<root password> --host=127.0.0.1 -P 3306 reviewdb
+```
+
+```text
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 69
+Server version: 8.0.33 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> 
+
+```
+
+---
+
+### Show Databases
+
+```mysql
+show databases;
+```
+
+```text
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
+| reviewdb           |
++--------------------+
+3 rows in set (0.00 sec)
+```
+
+```
+NOTE: 
+Mysql and sys databases are only viewable as root.
+```
+
+---
+
+### Show Users
+
+```Root required```
+```shell
+select user, host from mysql.user;
+```
+```text
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| mysql-user-dev   | %         |
+| root             | %         |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+6 rows in set (0.00 sec)
+
+```
+
+---
+### Show Grants
+
+```mysql
+show grants for 'mysql-user-dev';
+```
+```text
++--------------------------------------------------------------+
+| Grants for mysql-user-dev@%                                  |
++--------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `mysql-user-dev`@`%`                   |
+| GRANT ALL PRIVILEGES ON `reviewdb`.* TO `mysql-user-dev`@`%` |
++--------------------------------------------------------------+
+```
+
+---
+### Show Tables
+
+```mysql
+show tables;
+```
+
+```text
+### Show Databases
+
+```mysql
+show databases;
+```
+
+```text
++--------------------+
+| Tables_in_reviewdb |
++--------------------+
+| reviews            |
+| reviews_seq        |
++--------------------+
+2 rows in set (0.01 sec)
+
+
+```
+---
+
+### Select Database
+
+```mysql
+use reviewdb
+```
+```text
+Database changed
+```
+---
+
+### Show Schema
+
+```mysql
+desc reviews
+```
+```text
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| id         | int          | NO   | PRI | NULL    |       |
+| author     | varchar(255) | YES  |     | NULL    |       |
+| content    | varchar(255) | YES  |     | NULL    |       |
+| product_id | int          | NO   | MUL | NULL    |       |
+| review_id  | int          | NO   |     | NULL    |       |
+| subject    | varchar(255) | YES  |     | NULL    |       |
+| version    | int          | NO   |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
 ```
