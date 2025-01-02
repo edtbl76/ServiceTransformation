@@ -4,7 +4,8 @@
 
 - [Executing Test Runner](#executing-test-runner)
 - [Gradle (CLI, Intellij)](TESTING-GRADLE.md)
-- [Manually Testing (based on testRunner.sh)](TESTING-TESTRUNNER.md)
+- [Manually Testing (based on testRunner.sh)](TESTING-TESTRUNNER.md)  Uses seeded data.
+- [Manually testing (bare environment)](TESTING-TESTENVONLY.md) Doesn't use seeded data. 
 
 
 ## Documentation

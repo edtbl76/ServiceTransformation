@@ -94,6 +94,28 @@ docker-compose down
 
 ### OpenAPI
 
+- Product Composite API Documentation 
+- [(Web) - http://localhost:8080/openapi/swagger-ui.html](http://localhost:8080/openapi/swagger-ui.html)
+- [(JSON) - http://localhost:8080/openapi/v3/api-docs](http://localhost:8080/openapi/v3/api-docs)
+
+
+### RabbitMQ
+
+- [RabbigMQ Admin Portal](http://localhost:15672/)
+  - [Overview](http://localhost:15672/#/)
+  - [Connections](http://localhost:15672/#/connections)
+  - [Channels](http://localhost:15672/#/channels)
+  - [Exchanges](http://localhost:15672/#/exchanges)
+  - [Queues and Streams](http://localhost:15672/#/queues)
+  - [Admin](http://localhost:15672/#/users)
+
+Credentials
+```text
+user:guest
+pass:guest
+```
+
+
 ### Spring Actuator
 
 - [/actuator](http://localhost:8080/actuator)

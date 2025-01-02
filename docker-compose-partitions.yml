@@ -150,7 +150,7 @@ services:
       retries: 60
 
   rabbitmq:
-    image: 4.0.5-management
+    image: rabbitmq:4.0.5-management
     deploy:
       resources:
         limits:
