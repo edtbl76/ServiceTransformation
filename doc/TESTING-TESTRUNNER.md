@@ -125,34 +125,32 @@ Content-Length: 543
 
 ```shell
 ## curl
-curl -H "accept:application/json" localhost:8761/eureka/apps -s | jq
+curl -H "accept:application/json" localhost:8080/eureka/api/apps -s | jq
 ## httpie
-http GET :8761/eureka/apps Accept:application/json --unsorted
+http GET :8080/eureka/api/apps Accept:application/json --unsorted
 ```
 
 NOTE: if you don't add the accept:application/json part then this will show in XML (very ugly!)
 ```text
-HTTP/1.1 200 
+HTTP/1.1 200 OK
 Content-Encoding: gzip
 Content-Type: application/json
-Content-Length: 812
-Date: Sat, 04 Jan 2025 05:32:39 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
+Content-Length: 899
+Date: Sat, 04 Jan 2025 21:19:44 GMT
 
 {
     "applications": {
         "versions__delta": "1",
-        "apps__hashcode": "UP_4_",
+        "apps__hashcode": "UP_5_",
         "application": [
             {
-                "name": "PRODUCT-COMPOSITE",
+                "name": "GATEWAY",
                 "instance": [
                     {
-                        "instanceId": "63e64c1e0f74:product-composite:8080",
-                        "hostName": "63e64c1e0f74",
-                        "app": "PRODUCT-COMPOSITE",
-                        "ipAddr": "172.22.0.2",
+                        "instanceId": "26faab919192:gateway:8080",
+                        "hostName": "26faab919192",
+                        "app": "GATEWAY",
+                        "ipAddr": "172.30.0.4",
                         "status": "UP",
                         "overriddenStatus": "UNKNOWN",
                         "port": {
@@ -171,22 +169,68 @@ Connection: keep-alive
                         "leaseInfo": {
                             "renewalIntervalInSecs": 5,
                             "durationInSecs": 5,
-                            "registrationTimestamp": 1735968482997,
-                            "lastRenewalTimestamp": 1735968683390,
+                            "registrationTimestamp": 1736024304239,
+                            "lastRenewalTimestamp": 1736025581167,
                             "evictionTimestamp": 0,
-                            "serviceUpTimestamp": 1735968482998
+                            "serviceUpTimestamp": 1736024304239
                         },
                         "metadata": {
                             "management.port": "8080"
                         },
-                        "homePageUrl": "http://63e64c1e0f74:8080/",
-                        "statusPageUrl": "http://63e64c1e0f74:8080/actuator/info",
-                        "healthCheckUrl": "http://63e64c1e0f74:8080/actuator/health",
+                        "homePageUrl": "http://26faab919192:8080/",
+                        "statusPageUrl": "http://26faab919192:8080/actuator/info",
+                        "healthCheckUrl": "http://26faab919192:8080/actuator/health",
+                        "vipAddress": "gateway",
+                        "secureVipAddress": "gateway",
+                        "isCoordinatingDiscoveryServer": "false",
+                        "lastUpdatedTimestamp": "1736024304239",
+                        "lastDirtyTimestamp": "1736024304146",
+                        "actionType": "ADDED"
+                    }
+                ]
+            },
+            {
+                "name": "PRODUCT-COMPOSITE",
+                "instance": [
+                    {
+                        "instanceId": "f294c2c9f717:product-composite:8080",
+                        "hostName": "f294c2c9f717",
+                        "app": "PRODUCT-COMPOSITE",
+                        "ipAddr": "172.30.0.6",
+                        "status": "UP",
+                        "overriddenStatus": "UNKNOWN",
+                        "port": {
+                            "$": 8080,
+                            "@enabled": "true"
+                        },
+                        "securePort": {
+                            "$": 443,
+                            "@enabled": "false"
+                        },
+                        "countryId": 1,
+                        "dataCenterInfo": {
+                            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+                            "name": "MyOwn"
+                        },
+                        "leaseInfo": {
+                            "renewalIntervalInSecs": 5,
+                            "durationInSecs": 5,
+                            "registrationTimestamp": 1736024304535,
+                            "lastRenewalTimestamp": 1736025581451,
+                            "evictionTimestamp": 0,
+                            "serviceUpTimestamp": 1736024304535
+                        },
+                        "metadata": {
+                            "management.port": "8080"
+                        },
+                        "homePageUrl": "http://f294c2c9f717:8080/",
+                        "statusPageUrl": "http://f294c2c9f717:8080/actuator/info",
+                        "healthCheckUrl": "http://f294c2c9f717:8080/actuator/health",
                         "vipAddress": "product-composite",
                         "secureVipAddress": "product-composite",
                         "isCoordinatingDiscoveryServer": "false",
-                        "lastUpdatedTimestamp": "1735968482998",
-                        "lastDirtyTimestamp": "1735968482896",
+                        "lastUpdatedTimestamp": "1736024304535",
+                        "lastDirtyTimestamp": "1736024304513",
                         "actionType": "ADDED"
                     }
                 ]
@@ -195,10 +239,10 @@ Connection: keep-alive
                 "name": "PRODUCT",
                 "instance": [
                     {
-                        "instanceId": "bb772802bb6a:product:8080",
-                        "hostName": "bb772802bb6a",
+                        "instanceId": "b851bcd2514a:product:8080",
+                        "hostName": "b851bcd2514a",
                         "app": "PRODUCT",
-                        "ipAddr": "172.22.0.8",
+                        "ipAddr": "172.30.0.9",
                         "status": "UP",
                         "overriddenStatus": "UNKNOWN",
                         "port": {
@@ -217,22 +261,22 @@ Connection: keep-alive
                         "leaseInfo": {
                             "renewalIntervalInSecs": 5,
                             "durationInSecs": 5,
-                            "registrationTimestamp": 1735968484684,
-                            "lastRenewalTimestamp": 1735968684986,
+                            "registrationTimestamp": 1736024305465,
+                            "lastRenewalTimestamp": 1736025582364,
                             "evictionTimestamp": 0,
-                            "serviceUpTimestamp": 1735968484684
+                            "serviceUpTimestamp": 1736024305465
                         },
                         "metadata": {
                             "management.port": "8080"
                         },
-                        "homePageUrl": "http://bb772802bb6a:8080/",
-                        "statusPageUrl": "http://bb772802bb6a:8080/actuator/info",
-                        "healthCheckUrl": "http://bb772802bb6a:8080/actuator/health",
+                        "homePageUrl": "http://b851bcd2514a:8080/",
+                        "statusPageUrl": "http://b851bcd2514a:8080/actuator/info",
+                        "healthCheckUrl": "http://b851bcd2514a:8080/actuator/health",
                         "vipAddress": "product",
                         "secureVipAddress": "product",
                         "isCoordinatingDiscoveryServer": "false",
-                        "lastUpdatedTimestamp": "1735968484684",
-                        "lastDirtyTimestamp": "1735968484638",
+                        "lastUpdatedTimestamp": "1736024305465",
+                        "lastDirtyTimestamp": "1736024305410",
                         "actionType": "ADDED"
                     }
                 ]
@@ -241,10 +285,10 @@ Connection: keep-alive
                 "name": "REVIEW",
                 "instance": [
                     {
-                        "instanceId": "36a92fd5c3f3:review:8080",
-                        "hostName": "36a92fd5c3f3",
+                        "instanceId": "80c90b773396:review:8080",
+                        "hostName": "80c90b773396",
                         "app": "REVIEW",
-                        "ipAddr": "172.22.0.9",
+                        "ipAddr": "172.30.0.10",
                         "status": "UP",
                         "overriddenStatus": "UNKNOWN",
                         "port": {
@@ -263,22 +307,22 @@ Connection: keep-alive
                         "leaseInfo": {
                             "renewalIntervalInSecs": 5,
                             "durationInSecs": 5,
-                            "registrationTimestamp": 1735968499310,
-                            "lastRenewalTimestamp": 1735968684589,
+                            "registrationTimestamp": 1736024318986,
+                            "lastRenewalTimestamp": 1736025580892,
                             "evictionTimestamp": 0,
-                            "serviceUpTimestamp": 1735968499310
+                            "serviceUpTimestamp": 1736024318986
                         },
                         "metadata": {
                             "management.port": "8080"
                         },
-                        "homePageUrl": "http://36a92fd5c3f3:8080/",
-                        "statusPageUrl": "http://36a92fd5c3f3:8080/actuator/info",
-                        "healthCheckUrl": "http://36a92fd5c3f3:8080/actuator/health",
+                        "homePageUrl": "http://80c90b773396:8080/",
+                        "statusPageUrl": "http://80c90b773396:8080/actuator/info",
+                        "healthCheckUrl": "http://80c90b773396:8080/actuator/health",
                         "vipAddress": "review",
                         "secureVipAddress": "review",
                         "isCoordinatingDiscoveryServer": "false",
-                        "lastUpdatedTimestamp": "1735968499310",
-                        "lastDirtyTimestamp": "1735968499280",
+                        "lastUpdatedTimestamp": "1736024318986",
+                        "lastDirtyTimestamp": "1736024318960",
                         "actionType": "ADDED"
                     }
                 ]
@@ -287,10 +331,10 @@ Connection: keep-alive
                 "name": "RECOMMENDATION",
                 "instance": [
                     {
-                        "instanceId": "70c53f6d941b:recommendation:8080",
-                        "hostName": "70c53f6d941b",
+                        "instanceId": "aedfbddd1840:recommendation:8080",
+                        "hostName": "aedfbddd1840",
                         "app": "RECOMMENDATION",
-                        "ipAddr": "172.22.0.7",
+                        "ipAddr": "172.30.0.8",
                         "status": "UP",
                         "overriddenStatus": "UNKNOWN",
                         "port": {
@@ -309,22 +353,22 @@ Connection: keep-alive
                         "leaseInfo": {
                             "renewalIntervalInSecs": 5,
                             "durationInSecs": 5,
-                            "registrationTimestamp": 1735968484619,
-                            "lastRenewalTimestamp": 1735968684933,
+                            "registrationTimestamp": 1736024305521,
+                            "lastRenewalTimestamp": 1736025582372,
                             "evictionTimestamp": 0,
-                            "serviceUpTimestamp": 1735968484620
+                            "serviceUpTimestamp": 1736024305521
                         },
                         "metadata": {
                             "management.port": "8080"
                         },
-                        "homePageUrl": "http://70c53f6d941b:8080/",
-                        "statusPageUrl": "http://70c53f6d941b:8080/actuator/info",
-                        "healthCheckUrl": "http://70c53f6d941b:8080/actuator/health",
+                        "homePageUrl": "http://aedfbddd1840:8080/",
+                        "statusPageUrl": "http://aedfbddd1840:8080/actuator/info",
+                        "healthCheckUrl": "http://aedfbddd1840:8080/actuator/health",
                         "vipAddress": "recommendation",
                         "secureVipAddress": "recommendation",
                         "isCoordinatingDiscoveryServer": "false",
-                        "lastUpdatedTimestamp": "1735968484620",
-                        "lastDirtyTimestamp": "1735968484573",
+                        "lastUpdatedTimestamp": "1736024305521",
+                        "lastDirtyTimestamp": "1736024305468",
                         "actionType": "ADDED"
                     }
                 ]
@@ -368,9 +412,9 @@ http :8761/eureka/apps Accept:application/json --unsorted | jq ".applications.ap
 ```
 
 Result:
-(You can go back up to the 'full' output to validate)
+(You can go back up to the 'full' output to validate) Remember, we have 3 core microservices, the composite and the gateway. 
 ```text
-4
+5
 ```
 
 

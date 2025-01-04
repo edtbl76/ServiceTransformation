@@ -183,8 +183,8 @@ fi
 waitForService curl http://$HOST:${PORT}/actuator/health
 
 # Verify Eureka/Service Discovery (All Microservices should be registered)
-assertCurl 200 "curl -H "accept:application/json" $HOST:8761/eureka/apps -s"
-assertEqual 4 $(echo $RESPONSE | jq ".applications.application | length")
+assertCurl 200 "curl -H "accept:application/json" $HOST:$PORT/eureka/api/apps -s"
+assertEqual 5 $(echo $RESPONSE | jq ".applications.application | length")
 
 seedTestData
 
@@ -228,6 +228,7 @@ assertCurl 200 "curl -s http://$HOST:$PORT/openapi/webjars/swagger-ui/index.html
 assertCurl 200 "curl -s http://$HOST:$PORT/openapi/v3/api-docs"
 
 assertEqual "3.0.1" "$(echo $RESPONSE | jq -r .openapi)"
+assertEqual "http://$HOST:$PORT" "$(echo $RESPONSE | jq -r .servers[].url)"
 assertCurl 200 "curl -s http://$HOST:$PORT/openapi/v3/api-docs.yaml"
 
 if [[ $@ == *"stop"* ]]
