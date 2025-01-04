@@ -1,7 +1,7 @@
 package org.emangini.servolution.composite.product.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.emangini.servolution.api.core.product.Product;
 import org.emangini.servolution.api.core.product.ProductService;
@@ -15,7 +15,6 @@ import org.emangini.servolution.api.exceptions.NotFoundException;
 import org.emangini.servolution.util.http.HttpErrorInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Lazy;
@@ -42,14 +41,16 @@ import static reactor.core.publisher.Flux.empty;
 @Slf4j
 public class ProductCompositeIntegration implements ProductService, RecommendationService, ReviewService {
 
-    private final Scheduler publishEventScheduler;
+    //TODO TLS
+    private final static String PRODUCT_SERVICE_URL = "http://product";
+    private final static String RECOMMENDATION_SERVICE_URL = "http://recommendation";
+    private final static String REVIEW_SERVICE_URL = "http://review";
+
+
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
+    private final Scheduler publishEventScheduler;
     private final StreamBridge streamBridge;
-
-    private final String productServiceUrl;
-    private final String recommendationServiceUrl;
-    private final String reviewServiceUrl;
 
 
 
@@ -58,40 +59,30 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
             /*
                 Set this to @Lazy to avoid circular dependency w/ product composite service application
              */
-            @Qualifier("publishEventScheduler") @Lazy
-            Scheduler publishEventScheduler,
-            WebClient.Builder webClient,
+            @Qualifier("publishEventScheduler") @Lazy Scheduler publishEventScheduler,
+            WebClient.Builder webClientBuilder,
             ObjectMapper objectMapper,
-            StreamBridge streamBridge,
-
-            @Value("${app.product-service.host}")
-            String productServiceHost,
-            @Value("${app.product-service.port}")
-            int productServicePort,
-
-            @Value("${app.recommendation-service.host}")
-            String recommendationServiceHost,
-            @Value("${app.recommendation-service.port}")
-            int recommendationServicePort,
-
-            @Value("${app.review-service.host}")
-            String reviewServiceHost,
-            @Value("${app.review-service.port}")
-            int reviewServicePort
-
-    ) {
+            StreamBridge streamBridge) {
         this.publishEventScheduler = publishEventScheduler;
-        this.webClient = webClient.build();
+        this.webClient = webClientBuilder.build();
         this.objectMapper = objectMapper;
         this.streamBridge = streamBridge;
+    }
 
-        // TODO TLS
-        this.productServiceUrl = "http://" + productServiceHost + ":" + productServicePort;
-        this.recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort;
-        this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort;
 
-        // register JavaTimeModule for Object Mapper
-        objectMapper.registerModule(new JavaTimeModule());
+    @PostConstruct
+    public void init() {
+        log.info("Validating injected beans...");
+        if (publishEventScheduler == null) {
+            throw new IllegalStateException("publishEventScheduler is not properly initialized!");
+        }
+        if (webClient == null) {
+            throw new IllegalStateException("WebClient is not properly initialized!");
+        }
+        if (streamBridge == null) {
+            throw new IllegalStateException("StreamBridge is not properly initialized!");
+        }
+        log.info("All beans validated successfully.");
     }
 
     @Override
@@ -107,7 +98,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     @Override
     public Mono<Product> getProduct(int productId) {
 
-        String url = this.productServiceUrl + "/product/" + productId;
+        String url = PRODUCT_SERVICE_URL + "/product/" + productId;
         log.debug("Calling getProduct API on URL: {}", url);
 
         return webClient.get()
@@ -140,7 +131,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     @Override
     public Flux<Recommendation> getRecommendations(int productId) {
 
-        String url = this.recommendationServiceUrl + "/recommendation?productId=" + productId;
+        String url = RECOMMENDATION_SERVICE_URL + "/recommendation?productId=" + productId;
         log.debug("Calling getRecommendations API on URL: {}", url);
 
         /*
@@ -177,7 +168,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     @Override
     public Flux<Review> getReviews(int productId) {
 
-        String url = this.reviewServiceUrl + "/review?productId=" + productId;
+        String url = REVIEW_SERVICE_URL + "/review?productId=" + productId;
         log.debug("Calling getReviews API on URL: {}", url);
 
          /*
@@ -203,31 +194,29 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     }
 
     public Mono<Health> getProductHealth() {
-        return getHealth(this.productServiceUrl);
+        return getHealth(PRODUCT_SERVICE_URL);
     }
-
     public Mono<Health> getRecommendationHealth() {
-        return getHealth(this.recommendationServiceUrl);
+        return getHealth(RECOMMENDATION_SERVICE_URL);
     }
-
     public Mono<Health> getReviewHealth() {
-        return getHealth(this.reviewServiceUrl);
+        return getHealth(REVIEW_SERVICE_URL);
     }
-
-    /*
-        Helper Methods
-     */
+    // Helpers
     private Mono<Health> getHealth(String url) {
         url += "/actuator/health";
-        log.debug("Calling HealthCheck API on URL: {}", url);
+        log.debug("Calling HealthCheck API at URL: {}", url);
         return webClient.get()
                 .uri(url)
                 .retrieve()
                 .bodyToMono(String.class)
                 .map(healthResult -> new Health.Builder().up().build())
-                .onErrorResume(error -> Mono.just(new Health.Builder().down(error).build()))
+                .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
                 .log(log.getName(), FINE);
     }
+    /*
+        Helper Methods
+     */
 
     // TODO handle raw use of Event, Message
     private void sendMessage(String bindingName, Event event) {

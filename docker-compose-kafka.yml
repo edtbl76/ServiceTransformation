@@ -175,3 +175,13 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
       - KAFKA_ADVERTISED_HOST_NAME=zookeeper
+
+  eureka:
+    build: discovery
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "8761:8761"
+

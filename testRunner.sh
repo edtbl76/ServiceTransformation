@@ -176,11 +176,15 @@ then
   echo "Restarting test environment..."
   echo "$ docker-compose down --remove-orphans"
   docker-compose down --remove-orphans
-  echo "$docker-compose up -d"
+  echo "$ docker-compose up -d"
   docker-compose up -d
 fi
 
 waitForService curl http://$HOST:${PORT}/actuator/health
+
+# Verify Eureka/Service Discovery (All Microservices should be registered)
+assertCurl 200 "curl -H "accept:application/json" $HOST:8761/eureka/apps -s"
+assertEqual 4 $(echo $RESPONSE | jq ".applications.application | length")
 
 seedTestData
 

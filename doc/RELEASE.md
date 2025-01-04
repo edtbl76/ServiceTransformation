@@ -1,14 +1,74 @@
 # Release Notes
 
-- [v2.2.0](#v220---persistence-mongo-mysql) [(v2.2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.2.0)
-- [v2.1.0](#v210---openapi) [(v2.1 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.1.0)
-- [v2.0.0](#v200---docker-compose) [(v2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.0.0)
-- [v1.0.2](#v102---springboot-java-microservices) [(v1 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v1.0.2)
-- [v1.0.1](#v101)
-- [v1.0.0](#v100)
+- [Version 3](#version-3)
+- [Version 2](#version-2)
+- [Version 1](#version-1)
+
+---
+
+# Version 3
+
+- Service Discovery (Eureka)
+
+## Version v3.0.0
+
+
 
 
 ---
+
+# Version 2
+
+- Reactive Streams / Event-Driven Architecture (RabbitMQ, Kafka)
+- Persistence (MongoDB, MySQL)
+- OpenAPI (Contracts, API-Driven Development)
+- Docker (Containerization)
+
+---
+
+- [v2.3.2](#v232---kafka-bug-fix-documentation-updates) [(v2.3.2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.3.2)
+- [v2.3.0](#v230---reactive-streams-event-driven-arch-rabbitmq-kafka) [(v2.3.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.3.0)
+- [v2.2.0](#v220---persistence-mongo-mysql) [(v2.2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.2.0)
+- [v2.1.0](#v210---openapi) [(v2.1 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.1.0)
+- [v2.0.0](#v200---docker-compose) [(v2 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v2.0.0)
+
+## v2.3.2 - Kafka Bug Fix, Documentation Updates
+
+## v2.3.0 - Reactive Streams, Event-Driven Arch (RabbitMQ, Kafka)
+
+[Project]
+- added spring cloud messaging dependencies v4.2.0
+- documentation refactoring
+- added messaging support and Spring Actuator / HealthCheck support for testRunner.sh
+- added support for rabbitmq and kafka to docker-compose; created additional profiles for streamed partitioning
+
+[API]
+- converted Java records to lombok-based classes for ProductAggregate, RecommendationSummary, ReviewSummary, ServiceAddresses
+- updated APIs to support Project Reactor (Reactive/Asynchronous) for all 4 API services (ProductCompositeService, ProductService, RecommendationService, ReviewService)
+- replaced NoArgsConstructors w/ custom for Product, Recommendation, Review Data POJOs
+- created EventType (Create, Delete) to support event-driven architecture
+- added custom Local/ZonedDateTime Serializers to solve bug w/ Jackson
+- added EventProcessingException
+
+[Product-Composite]
+- added Scheduler support for concurrency (SpringBootApplication, Integration layer)
+  - @Lazy loaded into integration layer to avoid circular dependency issues
+- added support for Spring Actuator HealthCheck API
+- added Project Reactor (Reactive Streams) support to integration and implementation layers
+- added spring cloud streams/messaging support for rabbitmq, and additional profiles for streamed partitioning and kafka=
+- added tests for messaging/events
+- updated tests for reactive operations
+
+[Product, Recommendation, Review]
+- updated Mongo to Reactive Mongo support (Product, Recommendation)
+- updated Entities to have custom String repr
+- updated Repositories for reactive crud operations
+- added Message Processor Configuration class
+- updated *ServiceImpl for reactive code
+- - added spring cloud streams/messaging support for rabbitmq, and additional profiles for streamed partitioning and kafka
+- added tests for messaging/events
+- updated tests for reactive code (StepVerifier)
+
 ## v2.2.0 - Persistence (Mongo, MySQL)
 
 [Project]
@@ -76,6 +136,15 @@
 
 
 ---
+
+# Version 1
+
+- SpringBoot Java Microservices
+
+---
+- [v1.0.2](#v102---springboot-java-microservices) [(v1 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v1.0.2)
+- [v1.0.1](#v101)
+- [v1.0.0](#v100)
 
 ## v1.0.2 - SpringBoot Java Microservices
 - added support for automated landscape/end-to-end testing through testRunner.sh
