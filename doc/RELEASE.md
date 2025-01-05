@@ -11,10 +11,23 @@
 - Service Discovery (Eureka)
 ---
 
+- [v3.2.0](#v320---oauth2-authorization-server) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.2.0)
 - [v3.1.0](#v310---spring-cloud-gateway) [(v3.1.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.1.0)
 - [v3.0.0](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
 
 ---
+
+
+## v3.2.0 - OAuth2 Authorization Server
+
+- **Add OAuth2 authorization workflow and secure gateway setup**: Integrated OAuth2-based Authorization Server with support for client credentials and authorization code grant flows. Updated Spring Boot configurations to handle TLS., excluded DataSource autoconfiguration where causing conflicts. Enhanced documentation and testing scripts for new secure gateway and authorization flows.
+
+- Had to refactor builds due to some strange dependency problems. (Punting)
+
+- **Enable OAuth2 and enhance security configurations**: Added OAuth2 Authorization Server with necessary configurations and integrated support for OAuth2-based resource servers in gateway and product-composite-service. Introduced eureka authentication, enhanced existing test coverage, and ensured secure API access with role-based scopes. Updated OpenAPI settings and Docker configurations to deploy and support these security enhancements seamlessly.
+
+- **Add Spring Cloud Gateway documentation and v3.1.0 details**. Updated testing and release documentation to include Spring Cloud Gateway integration. Added new sections for validating routes and gateway URLs, and updated `RELEASE.md` and `README.md` to reflect changes for version 3.1.0. This introduces centralized routing and enhanced service management.
+
 
 ## v3.1.0 - Spring Cloud Gateway
 

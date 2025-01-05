@@ -1,4 +1,4 @@
-# ServiceTransformation v3.2.0
+# ServiceTransformation v3.3.0
 
 ## Table of Contents
 - [Release Notes](#release-notes)
@@ -16,10 +16,9 @@
 
 ## Release Notes
 
-- **Add OAuth2 authorization workflow and secure gateway setup**: Integrated OAuth2-based Authorization Server with support for client credentials and authorization code grant flows. Updated Spring Boot configurations to handle TLS and MongoDB, excluded DataSource autoconfiguration where causing conflicts. Enhanced documentation and testing scripts for new secure gateway and authorization flows.
+### v3.3.0 -- Auth0
 
-Had to refactor builds due to some strange dependency problems. (Punting)
-
+- NOTES
 
 
 [Previous Releases](./doc/RELEASE.md)
