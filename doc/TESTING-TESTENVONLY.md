@@ -7,6 +7,9 @@ These examples do **not** use seeded data.
 - [Testing messaging (RabbitMQ)](#testing-messaging-rabbitmq)
 - [Testing streamed-partitions (RabbitMQ)](#testing-streamed-partitions-rabbitmq)
 - [Testing streamed-partitions (Kafka)](#testing-streamed-partitions-kafka)
+- [Testing Spring Cloud Gateway](#testing-spring-cloud-gateway)
+- [Testing Spring OAuth2 Server](#testing-spring-oauth2-server)
+- [Testing Authorization (OpenAPI)]()
 
 ---
 
@@ -472,3 +475,528 @@ Processed a total of 1 messages
 [Remember to turn everything off when you are done playing around!](#shutting-down-the-environment)
 
 ---
+
+## Testing Spring Cloud Gateway
+
+- [1. Validating the gateway URL](#1-validating-the-gateway-url)
+- [2. Validating routes](#2-validating-routes)
+- [3. Getting List of Routes](#3-getting-list-of-routes-)
+
+
+### 1. Validating the gateway URL
+
+```shell
+http --verify=no https://localhost:8443/actuator/gateway
+```
+
+```shell
+(base) ~/IdeaProjects/ServiceTransformation git:[develop]
+http --verify=no https://localhost:8443/actuator/gateway
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Content-Length: 2522
+Content-Type: application/json
+Expires: 0
+Pragma: no-cache
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 0
+
+[
+    {
+        "href": "/actuator/gateway/routedefinitions",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/globalfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routefilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/product-composite/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/oauth2-server/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/oauth2-login/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/oauth2-error/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/product-composite-swagger-ui/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/product-composite-swagger-ui-webjars/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/eureka-api/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/eureka-web-start/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/eureka-web-other/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/host_route_200/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/host_route_418/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/host_route_501/combinedfilters",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes",
+        "methods": [
+            "POST",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/product-composite",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/oauth2-server",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/oauth2-login",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/oauth2-error",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/product-composite-swagger-ui",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/product-composite-swagger-ui-webjars",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/eureka-api",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/eureka-web-start",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/eureka-web-other",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/host_route_200",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/host_route_418",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routes/host_route_501",
+        "methods": [
+            "POST",
+            "DELETE",
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/routepredicates",
+        "methods": [
+            "GET"
+        ]
+    },
+    {
+        "href": "/actuator/gateway/refresh",
+        "methods": [
+            "POST"
+        ]
+    }
+]
+```
+---
+
+### 2. Validating Routes
+
+```shell
+http --verify=no https://localhost:8443/actuator/gateway/routes
+```
+
+```text
+(base) ~/IdeaProjects/ServiceTransformation git:[develop]
+http --verify=no https://localhost:8443/actuator/gateway/routes
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Content-Type: application/json
+Expires: 0
+Pragma: no-cache
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 0
+transfer-encoding: chunked
+
+[
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/product-composite/**], match trailing slash: true",
+        "route_id": "product-composite",
+        "uri": "lb://product-composite"
+    },
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/oauth2/**], match trailing slash: true",
+        "route_id": "oauth2-server",
+        "uri": "lb://auth-server"
+    },
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/login/**], match trailing slash: true",
+        "route_id": "oauth2-login",
+        "uri": "lb://auth-server"
+    },
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/error/**], match trailing slash: true",
+        "route_id": "oauth2-error",
+        "uri": "lb://auth-server"
+    },
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/openapi/**], match trailing slash: true",
+        "route_id": "product-composite-swagger-ui",
+        "uri": "lb://product-composite"
+    },
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/webjars/**], match trailing slash: true",
+        "route_id": "product-composite-swagger-ui-webjars",
+        "uri": "lb://product-composite"
+    },
+    {
+        "filters": [
+            "[[SetPath template = '/eureka/{segment}'], order = 1]"
+        ],
+        "order": 0,
+        "predicate": "Paths: [/eureka/api/{segment}], match trailing slash: true",
+        "route_id": "eureka-api",
+        "uri": "http://eureka:8761"
+    },
+    {
+        "filters": [
+            "[[SetPath template = '/'], order = 1]"
+        ],
+        "order": 0,
+        "predicate": "Paths: [/eureka/web], match trailing slash: true",
+        "route_id": "eureka-web-start",
+        "uri": "http://eureka:8761"
+    },
+    {
+        "filters": [],
+        "order": 0,
+        "predicate": "Paths: [/eureka/**], match trailing slash: true",
+        "route_id": "eureka-web-other",
+        "uri": "http://eureka:8761"
+    },
+    {
+        "filters": [
+            "[[SetPath template = '/200'], order = 1]"
+        ],
+        "order": 0,
+        "predicate": "(Hosts: [i.feel.lucky:8080] && Paths: [/headerrouting/**], match trailing slash: true)",
+        "route_id": "host_route_200",
+        "uri": "http://httpstat.us:80"
+    },
+    {
+        "filters": [
+            "[[SetPath template = '/418'], order = 1]"
+        ],
+        "order": 0,
+        "predicate": "(Hosts: [im.a.teapot:8080] && Paths: [/headerrouting/**], match trailing slash: true)",
+        "route_id": "host_route_418",
+        "uri": "http://httpstat.us:80"
+    },
+    {
+        "filters": [
+            "[[SetPath template = '/501'], order = 1]"
+        ],
+        "order": 0,
+        "predicate": "Paths: [/headerrouting/**], match trailing slash: true",
+        "route_id": "host_route_501",
+        "uri": "http://httpstat.us:80"
+    }
+]
+```
+### 3. Getting List of Routes 
+
+```shell
+http --verify=no https://localhost:8443/actuator/gateway/routes | jq '.[] | {"\(.route_id)":"\(.uri)"}' | grep -v '{\|}'
+```
+
+```text
+  "product-composite": "lb://product-composite"
+  "oauth2-server": "lb://auth-server"
+  "oauth2-login": "lb://auth-server"
+  "oauth2-error": "lb://auth-server"
+  "product-composite-swagger-ui": "lb://product-composite"
+  "product-composite-swagger-ui-webjars": "lb://product-composite"
+  "eureka-api": "http://eureka:8761"
+  "eureka-web-start": "http://eureka:8761"
+  "eureka-web-other": "http://eureka:8761"
+  "host_route_200": "http://httpstat.us:80"
+  "host_route_418": "http://httpstat.us:80"
+  "host_route_501": "http://httpstat.us:80"
+```
+
+---
+
+## Testing Spring OAuth2 Server
+
+- [Getting write access token (AuthZ code grant flow)](#1-getting-read-access-tokens-using-authz-code-grant-flow)
+- [Getting read access token (AuthZ code grant flow)](#2-getting-write-access-token-using-authz-code-grant-flow)
+
+
+### 1. Getting read access tokens using authz code grant flow
+
+1. Login [https://localhost:8443/oauth2/authorize](https://localhost:8443/oauth2/authorize)
+
+```text
+Credentials
+user: username
+pass: password
+```
+
+2. Visit the following link [https://localhost:8443/oauth2/authorize?response_type=code&client_id=reader&redirect_uri=https://my.redirect.uri&scope=product:read&state=35725](https://localhost:8443/oauth2/authorize?response_type=code&client_id=reader&redirect.uri=https://my.redirect.uri&scope=product:read&state=35725) 
+
+
+
+![your-connection-is-not-private.png](img/your-connection-is-not-private.png)If you encounter this page, click "Advanced"  and then "proceed to localhost (unsafe)". 
+
+
+3. When you get to this page, select the check box and click "Submit Consent"
+
+![authz-code-grant-flow-consent.png](img/authz-code-grant-flow-consent.png)
+
+
+4. DON'T PANIC
+
+You're going to encounter some form of error page
+
+I've run into 2...
+- DNS_PROBE_FINISHED_NXDOMAIN
+- ERR_NAME_NOT_RESOLVED
+
+Look carefully at the urlbar, and you'll see that the request redirected you to `https://my.direct.uri` and provided you the codegrant.
+
+Example: 
+```text
+https://my.redirect.uri/?code=wpgtv6LQtrisltDc08jtHO0GdMjybOD5p7HZ7dZXb6K_D7afGDV5cvCQ7SaXBC5MQFdyyLqmgrAWIbD0gGRoZWtqwk4YZf9VNqCHQ5yPhO2K15QXSrh_Kk7xRYyTKQlX&state=35725
+```
+
+4. Get Refresh Token
+
+We're going to emulate the exchange between the authz code w/ an access token using a curl command
+(replace my code w/ yours)
+
+```shell
+curl -k https://reader:reader@localhost:8443/oauth2/token -d grant_type=authorization_code -d client_id=reader -d redirect_uri=https://my.redirect.uri -d code=h0r0ZPBoHivMPI4nbHw8vv76zPQAzgF-dqUcrke_kSOFOvZixu7ZTVZLNSV7VjfMk_4_nWGbhCPPYjnk1Bnxtn4prCPWb39OGpignZSZG2zOQjj0O2yPvL_GeOO9C8mu -s | jq
+```
+
+```text
+{
+  "access_token": "eyJraWQiOiI5ZTY4MmNhMS04MmUyLTQzYjAtOWY0Yy1hMjQyZDU4YjE3ZGIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImF1ZCI6InJlYWRlciIsIm5iZiI6MTczNjExMzgyNywic2NvcGUiOlsicHJvZHVjdDpyZWFkIl0sImlzcyI6Imh0dHA6Ly9hdXRoLXNlcnZlcjo5OTk5IiwiZXhwIjoxNzM2MTE3NDI3LCJpYXQiOjE3MzYxMTM4Mjd9.N3cNDxu7RUmWhbdMKllkLbn0nlkc_2hTP9HLKqMWLFOqRAw0NmCyZeC4fbwVKpYJQ0M7vbAMMhcC-nW9O-r9NzuWfcYMljeorRe_Oi6HPR8cJiQIgy1y7CldydQDQ5r-3kOy8x8oYUwKnGjxCSDaSHlJboxXED406M75zZ7V9HWsiY__u_4bcOiq18QsRiMwnnELip4bnYTk1mPi-xFaFwbk7lgnPJUXSOsBuxVttTriWEezhUiwcq4pwfFrik3qcOZCSjMW_sB-DeLjcWLyVhMQINSijyuU1dl13KHD7a6EVOCAzEMVdVmkOFUwWxxIEdXGL4b6V9t8Oc4fq8nSEg",
+  "refresh_token": "Q3-7bhighp7ys5MIdMZWUZaDQkKONhUizn2iv9qzWENSJRVZlQq7Ye5cyUofIqBh476C83jgVcOrG9UgqCYy5peU2Tw0NXupJa4yekPz1uWWJXNBnNN4SGW_t_7iTnGt",
+  "scope": "product:read",
+  "token_type": "Bearer",
+  "expires_in": 3599
+}
+```
+
+
+### 2. Getting Write access token using authz code grant flow
+
+
+0. (Delete any cookies)
+
+1. Login [https://localhost:8443/oauth2/authorize](https://localhost:8443/oauth2/authorize)
+
+```text
+Credentials
+user: username
+pass: password
+```
+
+2. [https://localhost:8443/oauth2/authorize?response_type=code&client_id=writer&redirect_uri=https://my.redirect.uri&scope=product:read+product:write&state=72489](https://localhost:8443/oauth2/authorize?response_type=code&client_id=writer&redirect.uri=https://my.redirect.uri&scope=product:read+product:write&state=72489)
+
+
+2. When you get to this page, select the check box and click "Submit Consent"
+
+For the writer, it will look different (both read and write consent checkboxes will be present)
+   ![authz-code-grant-flow-consent.png](img/authz-code-grant-flow-consent.png)
+
+3. DON'T PANIC
+
+You're going to encounter some form of error page
+
+I've run into 2...
+- DNS_PROBE_FINISHED_NXDOMAIN
+- ERR_NAME_NOT_RESOLVED
+
+Look carefully at the urlbar, and you'll see that the request redirected you to `https://my.direct.uri` and provided you the codegrant.
+
+Example:
+```text
+https://my.redirect.uri/?code=r3-yMUrN4M7MukgQe3CfiWKOPvRVMZCbTFa0MtX-JibepyqSxSIkOtTTkydouOjhpittfq9neenulRkm2chSZOgpk2ETcK3lIVlF7LLYDl_QvfRzuMlRLAWL9_fxK0T6&state=72489
+```
+
+4. Get Refresh Token
+
+We're going to emulate the exchange between the authz code w/ an access token using a curl command
+(replace my code w/ yours)
+
+```shell
+curl -k https://writer:writer@localhost:8443/oauth2/token -d grant_type=authorization_code -d client_id=writer -d redirect_uri=https://my.redirect.uri -d code=r3-yMUrN4M7MukgQe3CfiWKOPvRVMZCbTFa0MtX-JibepyqSxSIkOtTTkydouOjhpittfq9neenulRkm2chSZOgpk2ETcK3lIVlF7LLYDl_QvfRzuMlRLAWL9_fxK0T6 -s | jq
+```
+
+```text
+{
+  "access_token": "eyJraWQiOiI5ZTY4MmNhMS04MmUyLTQzYjAtOWY0Yy1hMjQyZDU4YjE3ZGIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImF1ZCI6IndyaXRlciIsIm5iZiI6MTczNjExNDU4NCwic2NvcGUiOlsicHJvZHVjdDp3cml0ZSIsInByb2R1Y3Q6cmVhZCJdLCJpc3MiOiJodHRwOi8vYXV0aC1zZXJ2ZXI6OTk5OSIsImV4cCI6MTczNjExODE4NCwiaWF0IjoxNzM2MTE0NTg0fQ.UeRlyT1tFxjzjOw-ZBcjfNJvi0CcNthJZBB8MT5BUQ3wGiAtF1TkthApqqRYs5dwVu0pIEa5vc0lW12CmvjONxPR7RS7JGrlCm7nFqdytkifuEbLyephQzNrdmIjA0K3mhztfwWKt0PkVCZnm3aN6jXPhIQNRdFw8_YsWRrgLbObPdjVdED8TRNeaN-Ri9Gq1UTORWfaoIjQ0tP2XzXiHtYxmK4GC1W8OntxeACGEa_Aq6_sbUiZ1dDi9tI0yac-iSKf6qucaIeYiEHo8vS9yRS-u7F_XYeJr4r61YOx2D4yq6PJbyd8Pz_nLH5GLdQCTLZBqHF7NJMr8OdNh4VLCQ",
+  "refresh_token": "AMNXF0jkVI8i2bpTZroEDiP00DfCVpeDEM8ECbhMAej0s3l4BLfeesn2xwOH_AAfAqphFK6P52cVGSZ_RVuOw_JuNf7Uk3TR3x_3asJtVPLqCqepZ8LvogjS4AkahtZ1",
+  "scope": "product:write product:read",
+  "token_type": "Bearer",
+  "expires_in": 3599
+}
+```
+---
+
+## Testing Authorization Flow (OpenAPI)
+
+1. Visit the [Swagger/OpenAPI UI](https://localhost:8443/openapi/webjars/swagger-ui/index.html)
+
+![openapi-ui-authorize.png](img/openapi-ui-authorize.png)
+
+2. Select the "Authorize" button
+
+![openapi-available-authorizations.png](img/openapi-available-authorizations.png)
+
+3. select the `client_id`, `client_secret` pair and the scopes and click the "Authorize" button
+
+(We've only coded 2: reader/reader and writer/writer)
+
+You may be prompted to login and submit consent. 
+
+![openapi-available-authorizations-result.png](img/openapi-available-authorizations-result.png)
+
+
+

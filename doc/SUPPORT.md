@@ -5,6 +5,7 @@
 
 - [Docker](#docker)
 - [Docker-Compose](#docker-compose)
+- [httpstat.us](#httpstat)
 - [Kafka](#kafka)
 - [MySQL](#mysql)
 
@@ -28,12 +29,34 @@
 - [Viewing Logs](#viewing-logs-in-docker)
 
 ### Validating Docker Process
+
+Shows
+- Container ID
+- Image Name
+- Execution Code (Runtime)
+- When the instance was created 
+- What the status is
+  - (Note if uptime is followed by "(healthy") it usually means that a `healthcheck:test` has been supplied in the `docker-compose.yml`)
+- network ports and port-forwarding
+- Container Instance Name
+
+
 ```shell
 docker ps
 ```
 ```text
-CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                    NAMES
-312778e9cf91   product-service   "java org.springfram…"   3 minutes ago   Up 3 minutes   0.0.0.0:8080->8080/tcp   gracious_hellman
+
+CONTAINER ID   IMAGE                                     COMMAND                  CREATED          STATUS                    PORTS                                                                                                         NAMES
+60b8d49f9fc9   servicetransformation-recommendation      "java org.springfram…"   26 seconds ago   Up 18 seconds             8080/tcp                                                                                                      servicetransformation-recommendation-1
+7265942faa68   servicetransformation-product             "java org.springfram…"   26 seconds ago   Up 18 seconds             8080/tcp                                                                                                      servicetransformation-product-1
+13f46f2cc43b   servicetransformation-product-composite   "java org.springfram…"   26 seconds ago   Up 18 seconds             8080/tcp                                                                                                      servicetransformation-product-composite-1
+f6b23f93b443   servicetransformation-review              "java org.springfram…"   26 seconds ago   Up 4 seconds              8080/tcp                                                                                                      servicetransformation-review-1
+7c8d0438ae21   servicetransformation-gateway             "java org.springfram…"   26 seconds ago   Up 19 seconds             8080/tcp, 0.0.0.0:8443->8443/tcp                                                                              servicetransformation-gateway-1
+bb9684db5192   rabbitmq:4.0.5-management                 "docker-entrypoint.s…"   26 seconds ago   Up 24 seconds (healthy)   4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   servicetransformation-rabbitmq-1
+c2b4d7e1b25c   mongo:7.0.16                              "docker-entrypoint.s…"   26 seconds ago   Up 24 seconds (healthy)   0.0.0.0:27017->27017/tcp                                                                                      servicetransformation-mongodb-1
+a6db88d8bfd0   servicetransformation-auth-server         "java org.springfram…"   26 seconds ago   Up 24 seconds (healthy)   9999/tcp                                                                                                      servicetransformation-auth-server-1
+ef52207380de   mysql:8.0.33                              "docker-entrypoint.s…"   26 seconds ago   Up 25 seconds (healthy)   0.0.0.0:3306->3306/tcp, 33060/tcp                                                                             servicetransformation-mysql-1
+8a53500d8290   servicetransformation-eureka              "java org.springfram…"   26 seconds ago   Up 24 seconds             0.0.0.0:8761->8761/tcp                                                                                        servicetransformation-eureka-1
 ```
 ---
 
@@ -127,7 +150,35 @@ review-1             | 2024-12-23T17:44:37.890Z  INFO 1 --- [           main] o.
 review-1             | 2024-12-23T17:44:38.404Z  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080 (http)
 review-1             | 2024-12-23T17:44:38.418Z  INFO 1 --- [           main] o.e.s.c.review.ReviewServiceApplication  : Started ReviewServiceApplication in 2.427 seconds (process running for 2.759)
 ```
+---
+## HTTPstat
 
+### Testing httpstat
+
+```shell
+# curl
+curl http://httpstat.us/200 -i
+
+# httpie
+http httpstat.us/200
+
+```
+
+```text
+HTTP/1.1 200 OK
+Content-Length: 6
+Content-Type: text/plain
+Date: Sun, 05 Jan 2025 20:35:48 GMT
+Request-Context: appId=cid-v1:3548b0f5-7f75-492f-82bb-b6eb0e864e53
+Server: Kestrel
+Set-Cookie: ARRAffinity=713d804574a5060dae8d43bce36ce76865b4b6e815b1d54ef2ba9fa789ad4c18;Path=/;HttpOnly;Domain=httpstat.us
+
+200 OK
+```
+
+
+
+---
 ## Kafka
 
 

@@ -37,6 +37,7 @@ public class HealthCheckConfiguration {
         healthCheckRegistry.put("recommendation", () -> getHeath("http://recommendation"));
         healthCheckRegistry.put("review", () -> getHeath("http://review"));
         healthCheckRegistry.put("product-composite", () -> getHeath("http://product-composite"));
+        healthCheckRegistry.put("auth-server", () -> getHeath("http://auth-server"));
 
         return CompositeReactiveHealthContributor.fromMap(healthCheckRegistry);
     }

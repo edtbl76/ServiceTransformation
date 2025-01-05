@@ -1,5 +1,14 @@
 springdoc:
-  swagger-ui.path: /openapi/swagger-ui.html
+  swagger-ui:
+    path: /openapi/swagger-ui.html
+    oauth2-redirect-url: https://localhost:8443/webjars/swagger-ui/oauth2-redirect.html
+    oauth:
+      client-id: writer
+      client-secret: writer
+      use-basic-authentication-with-access-code-grant: true
+  oAuthFlow:
+    authorizationUrl: https://localhost:8443/oauth2/authorize
+    tokenUrl: https://localhost:8443/oauth2/token
   api-docs.path: /openapi/v3/api-docs
   packagesToScan: org.emangini.servolution.composite.product
   pathsToMatch: /**
@@ -72,11 +81,20 @@ server:
   forward-headers-strategy: framework
 
 app:
+  eureka-username: username
+  eureka-password: password
   eureka-server: localhost
+  auth-server: localhost
 
 spring:
   application:
     name: product-composite
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${app.auth-server}:9999
+#          issuer-uri: https://dev-k26mww20c882irv6.us.auth0.com/
   # TODO remove this at some point
   main:
     allow-circular-references: true
@@ -104,10 +122,15 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+  # set to true to debug security WebFlux headers.
+  codec:
+    log-request-details: true
+
 eureka:
   client:
     service-url:
-      defaultZone: http://${app.eureka-server}:8761/eureka/
+      defaultZone: http://${app.eureka-username}:${app.eureka-password}@${app.eureka-server}:8761/eureka/
     initial-instance-info-replication-interval-seconds: 5
     registry-fetch-interval-seconds: 5
   instance:
@@ -118,6 +141,7 @@ logging:
   level:
     root: info
     org.emangini.servolution: debug
+    org.springframework.web.server.adapter.HttpWebHandlerAdapter: trace
 
 management:
   endpoint.health.show-details: always
@@ -141,6 +165,7 @@ server:
 
 app:
   eureka-server: eureka
+  auth-server: auth-server
 
 ---
 spring:
