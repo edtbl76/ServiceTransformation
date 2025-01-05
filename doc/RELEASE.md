@@ -9,9 +9,24 @@
 # Version 3
 
 - Service Discovery (Eureka)
+---
 
-## Version v3.0.0
+- [v3.0.0](#v300---service-discovery-eureka) [(v3.0.0)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
 
+## v3.0.0 - Service Discovery (Eureka)
+
+- **Service Discovery with Eureka**  
+  All microservices are now integrated with Eureka for centralized service discovery.  
+  Each service is configured to automatically register with Eureka upon startup. This simplifies inter-service communication and scalability.
+
+- **Improved Properties Configuration**  
+  Updated application properties across all microservices to enable seamless integration with Eureka.
+
+- **Simplified Service Endpoints**  
+  Service URLs within the product composite service have been simplified to leverage Eureka's service registry, improving maintainability and scalability.
+
+- **Post-Construction Validation**  
+  Beans now utilize a post-construction validation step to ensure the application context is properly initialized.
 
 
 

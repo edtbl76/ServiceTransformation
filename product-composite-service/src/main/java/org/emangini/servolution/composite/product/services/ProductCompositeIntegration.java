@@ -193,27 +193,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                 .then();
     }
 
-    public Mono<Health> getProductHealth() {
-        return getHealth(PRODUCT_SERVICE_URL);
-    }
-    public Mono<Health> getRecommendationHealth() {
-        return getHealth(RECOMMENDATION_SERVICE_URL);
-    }
-    public Mono<Health> getReviewHealth() {
-        return getHealth(REVIEW_SERVICE_URL);
-    }
-    // Helpers
-    private Mono<Health> getHealth(String url) {
-        url += "/actuator/health";
-        log.debug("Calling HealthCheck API at URL: {}", url);
-        return webClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(healthResult -> new Health.Builder().up().build())
-                .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
-                .log(log.getName(), FINE);
-    }
+
     /*
         Helper Methods
      */
