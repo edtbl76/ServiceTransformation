@@ -11,7 +11,18 @@
 - Service Discovery (Eureka)
 ---
 
-- [v3.0.0](#v300---service-discovery-eureka) [(v3.0.0)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
+- [v3.1.0](#v310---spring-cloud-gateway) [(v3.1.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.1.0)
+- [v3.0.0](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
+
+---
+
+## v3.1.0 - Spring Cloud Gateway
+
+
+- Add API Gateway to system architecture. Introduce Spring Cloud Gateway for centralized routing and service management. Update configurations, Docker setup, health checks, and documentation to align with the new Gateway integration. Adjust tests to ensure compatibility with the updated architecture.
+
+- Update release documentation for v3.1.0. Revised `RELEASE.md` to include detailed notes for v3.0.0, emphasizing Eureka integration, properties configuration, and service endpoint simplifications. Also updated the `README.md` to reflect the upcoming v3.1.0 release.
+
 
 ## v3.0.0 - Service Discovery (Eureka)
 

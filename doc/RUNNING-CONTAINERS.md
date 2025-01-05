@@ -27,12 +27,18 @@
 docker-compose up -d
 ```
 ```text
-[+] Running 5/5
- ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                         0.1s 
- ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                         0.5s 
- ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                         0.5s 
- ✔ Container servicetransformation-review-1             Started                                                                                                                                                                                                                                         0.4s 
- ✔ Container servicetransformation-product-1            Started          
+[+] Running 10/11
+ ✔ Network servicetransformation_default                Created                                                                                                                                                                                                                                             0.0s 
+ ✔ Container servicetransformation-auth-server-1        Healthy                                                                                                                                                                                                                                             6.1s 
+ ✔ Container servicetransformation-mongodb-1            Healthy                                                                                                                                                                                                                                             6.1s 
+ ✔ Container servicetransformation-eureka-1             Started                                                                                                                                                                                                                                             0.6s 
+ ⠧ Container servicetransformation-mysql-1              Waiting                                                                                                                                                                                                                                             9.8s 
+ ✔ Container servicetransformation-rabbitmq-1           Healthy                                                                                                                                                                                                                                             6.2s 
+ ✔ Container servicetransformation-gateway-1            Started                                                                                                                                                                                                                                             6.2s 
+ ✔ Container servicetransformation-product-composite-1  Started                                                                                                                                                                                                                                             6.8s 
+ ✔ Container servicetransformation-review-1             Created                                                                                                                                                                                                                                             0.1s 
+ ✔ Container servicetransformation-recommendation-1     Started                                                                                                                                                                                                                                             6.8s 
+ ✔ Container servicetransformation-product-1            Started                                                                                                                                                                                                                                             6.8s 
 ```
 
 ### Stopping / Shutting Down

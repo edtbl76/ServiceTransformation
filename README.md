@@ -1,4 +1,4 @@
-# ServiceTransformation v3.1.0
+# ServiceTransformation v3.2.0
 
 ## Table of Contents
 - [Release Notes](#release-notes)
@@ -16,9 +16,9 @@
 
 ## Release Notes
 
-Add API Gateway to the system architecture
+- **Add OAuth2 authorization workflow and secure gateway setup**: Integrated OAuth2-based Authorization Server with support for client credentials and authorization code grant flows. Updated Spring Boot configurations to handle TLS and MongoDB, excluded DataSource autoconfiguration where causing conflicts. Enhanced documentation and testing scripts for new secure gateway and authorization flows.
 
-Introduced a new Gateway service with Spring Cloud Gateway to route requests and enable centralized service management. Updated configurations, Docker setup, and health checks, and integrated it into the microservices landscape. Adjusted relevant tests and documentation to reflect the addition.
+Had to refactor builds due to some strange dependency problems. (Punting)
 
 
 
@@ -73,14 +73,20 @@ NOTE: Environment must be up to reach these.
 
 ### Eureka
 
+Credentials
+```text
+user:username
+pass:password
+```
+
 - [Eureka Administration](http://localhost:8761/)
 - [Eureka XML Manifest (Direct)](http://localhost:8761/eureka/apps)
-- [Eureka XML Manifest (Gateway)](http://localhost:8080/eureka/api/apps)
+- [Eureka XML Manifest (Gateway)](https://localhost:8443/eureka/api/apps)
 
 ### OpenAPI
 
 - Product Composite API Documentation 
-- [(Web) - http://localhost:8080/openapi/swagger-ui.html](http://localhost:8080/openapi/swagger-ui.html)
+- [(Web) - https://localhost:8443/openapi/swagger-ui.html](http://localhost:8080/openapi/swagger-ui.html)
 - [(JSON) - http://localhost:8080/openapi/v3/api-docs](http://localhost:8080/openapi/v3/api-docs)
 
 
@@ -122,9 +128,6 @@ pass:guest
   - [/actuator/metrics](http://localhost:8080/actuator/metrics)
   - [/actuator/sbom](http://localhost:8080/actuator/sbom)
   - [/actuator/scheduledtasks](http://localhost:8080/actuator/scheduledtasks)
-  
-
-
 
 
 ---

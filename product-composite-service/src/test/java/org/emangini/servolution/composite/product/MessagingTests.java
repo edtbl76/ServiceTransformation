@@ -34,11 +34,13 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static reactor.core.publisher.Mono.just;
 
-@Disabled
+
 @Slf4j
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
+        classes = {TestSecurityConfiguration.class},
         properties = {
+                "spring.security.oauth2.resourceserver.jwt.issuer-uri=",
                 "spring.main.allow-bean-definition-overriding=true",
                 "eureka.client.enabled=false"
         }
