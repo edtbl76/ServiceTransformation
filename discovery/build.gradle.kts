@@ -11,9 +11,12 @@ repositories {
 
 
 dependencies {
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:${property("springCloudVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:${property("springCloudVersion")}")
     implementation("org.glassfish.jaxb:jaxb-runtime")
+    implementation("org.springframework.cloud:spring-cloud-starter-config:${property("springCloudVersion")}")
+    implementation("org.springframework.retry:spring-retry:${property("springRetryVersion")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 }

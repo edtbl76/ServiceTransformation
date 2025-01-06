@@ -8,4 +8,5 @@ include(
     "util",
     "discovery",
     "gateway",
-    "authz")
+    "authz",
+    "config-server")

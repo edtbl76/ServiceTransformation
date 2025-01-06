@@ -10,6 +10,8 @@ These examples do **not** use seeded data.
 - [Testing Spring Cloud Gateway](#testing-spring-cloud-gateway)
 - [Testing Spring OAuth2 Server](#testing-spring-oauth2-server)
 - [Testing Authorization (OpenAPI)]()
+- [Testing Config Server](#testing-config-server)
+- [Testing Encrypt/Decrypt Endpoints](#testing-encryptdecrypt-endpoints)
 
 ---
 
@@ -999,4 +1001,156 @@ You may be prompted to login and submit consent.
 ![openapi-available-authorizations-result.png](img/openapi-available-authorizations-result.png)
 
 
+---
 
+## Testing Config Server
+
+
+```shell
+## curl
+curl -H "accept:application/json" -k https://username:password@localhost:8443/config/product/docker -s | jq
+## httpie
+http --unsorted --verify=no --auth username:password https://localhost:8443/config/product/docker Accept:application/json
+```
+
+Result: Shows 200 response
+```text
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Date: Thu, 09 Jan 2025 16:44:38 GMT
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+Referrer-Policy: no-referrer
+
+{
+    "name": "product",
+    "profiles": [
+        "docker"
+    ],
+    "label": null,
+    "version": null,
+    "state": null,
+    "propertySources": [
+        {
+            "name": "file:/configuration-repository/product-docker.yml",
+            "source": {
+                "spring.data.mongodb.host": "mongodb",
+                "server.port": 8080
+            }
+        },
+        {
+            "name": "file:/configuration-repository/application-docker.yml",
+            "source": {
+                "spring.cloud.activate.on-profile": "docker",
+                "spring.cloud.stream.kafka.binder.brokers": "kafka",
+                "spring.rabbitmq.host": "rabbitmq",
+                "app.eureka-server": "eureka",
+                "app.auth-server": "auth-server"
+            }
+        },
+        {
+            "name": "file:/configuration-repository/product.yml",
+            "source": {
+                "server.port": 7001,
+                "server.error.include-message": "always",
+                "spring.application.name": "product",
+                "spring.data.mongodb.host": "localhost",
+                "spring.data.mongodb.port": 27017,
+                "spring.data.mongodb.database": "productdb",
+                "spring.cloud.function.definition": "messageProcessor",
+                "spring.cloud.stream.default.contentType": "application/json",
+                "spring.cloud.stream.bindings.messageProcessor-in-0.destination": "products",
+                "spring.cloud.stream.bindings.messageProcessor-in-0.group": "productsGroup",
+                "spring.cloud.stream.bindings.messageProcessor-in-0.consumer.max-attempts": 3,
+                "spring.cloud.stream.bindings.messageProcessor-in-0.consumer.back-off-initial-interval": 500,
+                "spring.cloud.stream.bindings.messageProcessor-in-0.consumer.back-off-max-interval": 1000,
+                "spring.cloud.stream.bindings.messageProcessor-in-0.consumer.back-off-multiplier": 2.0,
+                "spring.cloud.stream.rabbit.bindings.messageProcessor-in-0.consumer.auto-bind-dlq": true,
+                "spring.cloud.stream.rabbit.bindings.messageProcessor-in-0.consumer.republish-to-dlq": true,
+                "spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer.enable-dlq": true,
+                "logging.level.root": "info",
+                "logging.level.org.emangini.servolution": "debug",
+                "logging.level.org.springframework.data.mongodb.core.ReactiveMongoTemplate": "debug"
+            }
+        },
+        {
+            "name": "file:/configuration-repository/application.yml",
+            "source": {
+                "app.eureka-username": "username",
+                "app.eureka-server": "localhost",
+                "app.auth-server": "localhost",
+                "eureka.client.service-url.defaultZone": "http://${app.eureka-username}:${app.eureka-password}@${app.eureka-server}:8761/eureka/",
+                "eureka.client.initial-instance-info-replication-interval-seconds": 5,
+                "eureka.client.registry-fetch-interval-seconds": 5,
+                "eureka.instance.lease-renewal-interval-in-seconds": 5,
+                "eureka.instance.lease-expiration-duration-in-seconds": 5,
+                "spring.rabbitmq.host": "127.0.0.1",
+                "spring.rabbitmq.port": 5672,
+                "spring.rabbitmq.username": "guest",
+                "spring.cloud.stream.kafka.binder.brokers": "127.0.0.1",
+                "spring.cloud.stream.kafka.binder.defaultBrokerPort": 9092,
+                "spring.cloud.stream.default-binder": "rabbit",
+                "management.endpoint.health.show-details": "always",
+                "management.endpoints.web.exposure.include": "*",
+                "app.eureka-password": "password",
+                "spring.rabbitmq.password": "guest"
+            }
+        }
+    ]
+}
+```
+---
+
+## Testing Encrypt/Decrypt Endpoints
+
+- [1. Test Encrypt](#1-test-encrypt)
+- [2. Test Decrypt](#2-test-decrypt)
+
+### 1. Test Encrypt
+
+#### Curl
+```shell
+curl -k https://username:password@localhost:8443/config/encrypt --data-urlencode "hello world" -s
+```
+```text
+e302e8cfd253bfdbe744b6aa2c84540d7b51bd2e99a39e3ea2908b80fe2bfe3e
+```
+
+#### Httpie
+```shell
+http --unsorted --verify=no --auth username:password POST https://localhost:8443/config/encrypt  body="hello world" --form
+```
+```text
+HTTP/1.1 200 OK
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 96
+Date: Thu, 09 Jan 2025 16:52:41 GMT
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+Referrer-Policy: no-referrer
+
+e9cc69771fb9e2d4fe1a7ce55ee64db83bc37bf4bbd397f4617679255d32dd8ae208c507105a065a75d255403b1d6ecb
+```
+
+### 2. Test Decrypt
+
+#### Curl
+
+```shell
+curl -k https://username:password@localhost:8443/config/decrypt -d e302e8cfd253bfdbe744b6aa2c84540d7b51bd2e99a39e3ea2908b80fe2bfe3e -s
+```
+
+```text
+hello world
+```

@@ -1,0 +1,42 @@
+server:
+  port: 7003
+  error.include-message: always
+
+spring:
+  application.name: review
+  jpa.hibernate.ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost/reviewdb
+    username: user
+    password: '{cipher}32cb5f48e9b150ad60ce99555529f4b2187ae026b5b9548414588f6f4a24155c'
+    hikari.initialization-fail-timeout: 60000
+  cloud:
+    function.definition: messageProcessor
+    stream:
+      default.contentType: application/json
+      bindings:
+        messageProcessor-in-0:
+          destination: reviews
+          group: reviewsGroup
+          consumer:
+            max-attempts: 3
+            back-off-initial-interval: 500
+            back-off-max-interval: 1000
+            back-off-multiplier: 2.0
+      rabbit.bindings:
+        messageProcessor-in-0:
+          consumer:
+            auto-bind-dlq: true
+            republish-to-dlq: true
+      kafka:
+        bindings:
+          messageProcessor-in-0:
+            consumer:
+              enable-dlq: true
+
+logging:
+  level:
+    root: info
+    org.emangini.servolution: debug
+    org.hibernate.sql: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

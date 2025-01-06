@@ -21,7 +21,11 @@ import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORT
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.hasSize;
 
-@DataJpaTest
+@DataJpaTest(
+        properties = {
+                "spring.jpa.hibernate.ddl-auto=update",
+                "spring.cloud.config.enabled=false"
+        })
 @Transactional(propagation = NOT_SUPPORTED)
 @AutoConfigureTestDatabase(replace = NONE)
 public class PersistenceTests extends MySqlTestBase {

@@ -31,7 +31,9 @@ import static org.springframework.http.MediaType.*;
 
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
-        properties = {"eureka.client.enabled=false"}
+        properties = {
+                "eureka.client.enabled=false",
+                "spring.cloud.config.enabled=false"}
 )
 class ProductServiceApplicationTests extends MongoDbTestBase {
 

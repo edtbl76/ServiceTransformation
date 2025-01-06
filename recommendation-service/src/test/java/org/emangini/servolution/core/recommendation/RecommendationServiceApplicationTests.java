@@ -27,8 +27,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
-        properties = {"eureka.client.enabled=false"}
-)
+        properties = {
+                "eureka.client.enabled=false",
+                "spring.cloud.config.enabled=false"
+        })
 class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
     @Autowired
