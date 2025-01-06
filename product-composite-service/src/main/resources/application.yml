@@ -93,8 +93,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://${app.auth-server}:9999
-#          issuer-uri: https://dev-k26mww20c882irv6.us.auth0.com/
+          ## Spring OAuth2 Issuer URI
+          #          issuer-uri: http://${app.auth-server}:9999
+          ## Auth0 Issuer URI
+          issuer-uri: https://dev-k26mww20c882irv6.us.auth0.com/
   # TODO remove this at some point
   main:
     allow-circular-references: true
