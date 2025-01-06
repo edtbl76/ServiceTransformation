@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+
 #
-# *** THIS SCRIPT RESETS THE DEFINITIONS IN THE TENANT ***
+# *** THIS SCRIPT RESET THE DEFINITIPONS IN THE TENANT ***
 #
 
 source env.bash
