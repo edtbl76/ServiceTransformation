@@ -5,7 +5,7 @@ plugins {
 
 subprojects {
 
-    group = "org.tbl.microdaddy"
+    group = "org.emangini.servolution"
 
     apply {
         plugin("java")
@@ -24,7 +24,6 @@ subprojects {
 
     dependencies {
         implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
-        implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${property("springCloudVersion")}")
         compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
         compileOnly("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
         annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")

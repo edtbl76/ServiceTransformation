@@ -1,4 +1,4 @@
-# ServiceTransformation v3.3.0
+# ServiceTransformation v3.4.0
 
 ## Table of Contents
 - [Release Notes](#release-notes)
@@ -16,10 +16,17 @@
 
 ## Release Notes
 
-### v3.3.0 -- Auth0
+### v3.4.0 - Spring Cloud Configuration
 
-- NOTES
+- **Integrate Spring Cloud Config Server into microservices.**
+  - Replaced static configuration with externalized configuration using Spring Cloud Config Server. Added new `config-server` module, updated service dependencies, and modified `application.yml` files to support centralized configuration. Updated docker-compose files to include credentials and environment variables for the config server.
 
+
+- **Remove unused Docker/Kafka configurations and update tests**
+  - Deleted outdated `docker` and `kafka` profile configs across services. Updated application and test configurations to align with refactored architecture, including integration of encrypt/decrypt endpoints. Updated documentation and test scripts to reflect these changes.
+
+- **Update release documentation for v3.3.0 and bump to v3.4.0**
+  - Added documentation for v3.3.0 Auth0 changes in RELEASE.md. Updated README.md to reflect the new v3.4.0 version and associated release notes.
 
 [Previous Releases](./doc/RELEASE.md)
 

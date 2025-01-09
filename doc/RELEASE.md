@@ -11,12 +11,17 @@
 - Service Discovery (Eureka)
 ---
 
+- [v3.3.0](#v330---auth0) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.3.0)
 - [v3.2.0](#v320---oauth2-authorization-server) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.2.0)
 - [v3.1.0](#v310---spring-cloud-gateway) [(v3.1.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.1.0)
 - [v3.0.0](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
 
 ---
 
+## v3.3.0 - Auth0
+
+* Switch to Auth0 configuration for OAuth2 setup
+* Update release documentation and prepare for v3.3.0
 
 ## v3.2.0 - OAuth2 Authorization Server
 
