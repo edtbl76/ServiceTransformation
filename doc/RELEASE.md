@@ -11,12 +11,26 @@
 - Service Discovery (Eureka)
 ---
 
-- [v3.3.0](#v330---auth0) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.3.0)
-- [v3.2.0](#v320---oauth2-authorization-server) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.2.0)
-- [v3.1.0](#v310---spring-cloud-gateway) [(v3.1.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.1.0)
-- [v3.0.0](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
+- [v3.4.0 - Configuration Centralization](#v340---configuration-centralization-spring-cloud-config) [(v3.4.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.4.0)
+- [v3.3.0 - Authorization (p2)](#v330---auth0) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.3.0)
+- [v3.2.0 - Authorization (p1) ](#v320---oauth2-authorization-server) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.2.0)
+- [v3.1.0 - Edge Service](#v310---spring-cloud-gateway) [(v3.1.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.1.0)
+- [v3.0.0 - Service Discovery](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
 
 ---
+
+## v3.4.0 - Configuration Centralization (Spring Cloud Config)
+
+- **Integrate Spring Cloud Config Server into microservices.**
+  - Replaced static configuration with externalized configuration using Spring Cloud Config Server. Added new `config-server` module, updated service dependencies, and modified `application.yml` files to support centralized configuration. Updated docker-compose files to include credentials and environment variables for the config server.
+
+
+- **Remove unused Docker/Kafka configurations and update tests**
+  - Deleted outdated `docker` and `kafka` profile configs across services. Updated application and test configurations to align with refactored architecture, including integration of encrypt/decrypt endpoints. Updated documentation and test scripts to reflect these changes.
+
+- **Update release documentation for v3.3.0 and bump to v3.4.0**
+  - Added documentation for v3.3.0 Auth0 changes in RELEASE.md. Updated README.md to reflect the new v3.4.0 version and associated release notes.
+
 
 ## v3.3.0 - Auth0
 
