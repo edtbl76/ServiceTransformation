@@ -14,3 +14,11 @@ spring:
         max-attempts: 8
         max-interval: 5000
         initial-interval: 1000
+
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  level:
+    root: info

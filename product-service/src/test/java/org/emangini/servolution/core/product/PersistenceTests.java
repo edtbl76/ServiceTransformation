@@ -1,5 +1,6 @@
 package org.emangini.servolution.core.product;
 
+import io.micrometer.observation.ObservationRegistry;
 import org.emangini.servolution.core.product.persistence.ProductEntity;
 import org.emangini.servolution.core.product.persistence.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.test.StepVerifier;
 
 import java.util.Objects;
@@ -18,6 +20,12 @@ class PersistenceTests extends MongoDbTestBase {
 
     @Autowired
     private ProductRepository repository;
+
+    // TODO Hack to get past persistence tests
+    @MockitoBean
+    ObservedAspectConfiguration observedAspectConfiguration;
+    @MockitoBean
+    ObservationRegistry observationRegistry;
 
     private ProductEntity savedEntity;
 

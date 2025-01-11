@@ -11,6 +11,7 @@
 - Service Discovery (Eureka)
 ---
 
+- [v3.5.0 - Circuit Breakers (Resilience4J)](#v350---circuit-breakers-resilience4j) [(v3.5.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.5.0)
 - [v3.4.0 - Configuration Centralization](#v340---configuration-centralization-spring-cloud-config) [(v3.4.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.4.0)
 - [v3.3.0 - Authorization (p2)](#v330---auth0) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.3.0)
 - [v3.2.0 - Authorization (p1) ](#v320---oauth2-authorization-server) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.2.0)
@@ -18,6 +19,15 @@
 - [v3.0.0 - Service Discovery](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
 
 ---
+
+## v3.5.0 - Circuit Breakers (Resilience4J)
+
+* **Resilience4J + Circuit Breaker integration**
+  * Expanded the TESTING.md and TESTING-TESTENVONLY.md to include steps for testing circuit breakers, such as response times and retry events. Updated `testRunner.sh` outputs and introduced resilience4j dependency to gradle.properties for circuit breaker integration.
+
+* **Update release documentation and prepare for v3.5.0 release**
+  * Updated RELEASE.md and README.md to include changes for v3.4.0 and prepared documentation for the upcoming v3.5.0 release. Adjusted version references and notes to align with the new release.
+
 
 ## v3.4.0 - Configuration Centralization (Spring Cloud Config)
 

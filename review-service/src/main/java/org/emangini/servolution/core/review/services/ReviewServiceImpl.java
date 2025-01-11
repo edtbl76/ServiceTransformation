@@ -1,5 +1,6 @@
 package org.emangini.servolution.core.review.services;
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
 import org.emangini.servolution.api.core.review.Review;
 import org.emangini.servolution.api.core.review.ReviewService;
@@ -23,6 +24,8 @@ import static java.util.logging.Level.FINE;
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
+    private static final String INVALID_PRODUCT_ID = "Invalid productId: ";
+
     private final Scheduler jdbcScheduler;
     private final ReviewRepository repository;
     private final ReviewMapper mapper;
@@ -41,11 +44,15 @@ public class ReviewServiceImpl implements ReviewService {
         this.serviceUtil = serviceUtil;
     }
 
+    @Observed(
+            name = "createReview",
+            contextualName = "review-service.create-review"
+    )
     @Override
     public Mono<Review> createReview(Review body) {
 
         if (body.getProductId() < 1) {
-            throw new InvalidInputException("Invalid productId: " + body.getProductId());
+            throw new InvalidInputException(INVALID_PRODUCT_ID + body.getProductId());
         }
 
         return Mono.fromCallable(() -> blockingCreateReview(body))
@@ -53,12 +60,15 @@ public class ReviewServiceImpl implements ReviewService {
 
     }
 
-
+    @Observed(
+            name = "getReviews",
+            contextualName = "review-service.get-reviews"
+    )
     @Override
     public Flux<Review> getReviews(int productId) {
 
         if (productId < 1) {
-            throw new InvalidInputException("Invalid productId: " + productId);
+            throw new InvalidInputException(INVALID_PRODUCT_ID + productId);
         }
 
         log.info("Calling getReviews for product with id={}", productId);
@@ -69,11 +79,15 @@ public class ReviewServiceImpl implements ReviewService {
                 .subscribeOn(jdbcScheduler);
     }
 
+    @Observed(
+            name = "deleteReviews",
+            contextualName = "review-service.delete-reviews"
+    )
     @Override
     public Mono<Void> deleteReviews(int productId) {
 
         if (productId < 1) {
-            throw new InvalidInputException("Invalid productId: " + productId);
+            throw new InvalidInputException(INVALID_PRODUCT_ID + productId);
         }
 
         return Mono.fromRunnable(() -> blockingDeleteReviews(productId))
@@ -84,7 +98,10 @@ public class ReviewServiceImpl implements ReviewService {
     /*
         Helper Methods
      */
-
+    @Observed(
+            name = "blockingCreateReview",
+            contextualName = "review-service.blocking-create-review"
+    )
     private Review blockingCreateReview(Review body) {
 
         try {
@@ -101,6 +118,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    @Observed(
+            name = "blockingGetReviews",
+            contextualName = "review-service.blocking-get-reviews"
+    )
     private List<Review> blockingGetReviews(int productId) {
 
         List<ReviewEntity> entities = repository.findByProductId(productId);
@@ -112,7 +133,10 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews;
     }
 
-
+    @Observed(
+            name = "blockingDeleteReviews",
+            contextualName = "review-service.blocking-delete-reviews"
+    )
     private void blockingDeleteReviews(int productId) {
         log.debug("deleteReviews: attempts to delete reviews for product w/ productId: {}", productId);
         repository.deleteAll(repository.findByProductId(productId));

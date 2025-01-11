@@ -14,6 +14,7 @@ These examples do **not** use seeded data.
 - [Testing Encrypt/Decrypt Endpoints](#testing-encryptdecrypt-endpoints)
 - [Testing CircuitBreakers (Response Time)](#testing-circuitbreakers-response-time)
 - [Testing CircuitBreakers (Retry Events)](#testing-circuit-breakers-test-retries)
+- [Testing Tracing](#testing-tracing)
 
 ---
 
@@ -1460,3 +1461,174 @@ Example (from a different run) --> This demonstrates a situation where the retry
   "numberOfAttempts": 3
 }
 ```
+
+---
+
+## Testing Tracing
+
+- [1. Set Access Token Tracing](#1-set-access-token-tracing)
+- [2. Test Normal Request](#2-test-normal-request-tracing)
+- [3. Check Zipkin (Normal Request)](#3-check-zipkin-normal-request)
+- [4. Test Failed Request](#4-test-failed-request-tracing)
+- [5. Check Zipkin (Failed Request)](#5-check-zipkin-failed-request)
+- [6. Testing Async Requests](#6-test-async-request-tracing)
+- [7. Check Zipkin (Async Request)](#7-check-zipkin-async-request)
+
+`NOTE:` When setting up this environment, instead of starting up docker containers manually, run ```testRunner.sh start```. This will make
+it much easier.
+
+
+### 1. Set Access Token (Tracing)
+
+./testRunner.sh echoes the ACCESS_TOKEN to standard out. Copy this string into an ENV like the example below.
+
+```shell
+export ACCESS_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9OeUYzSF9qdmZ4LTYySFVCNXE2NCJ9.eyJpc3MiOiJodHRwczovL2Rldi1rMjZtd3cyMGM4ODJpcnY2LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJHbWdESklOOFlJdUlwYjJZN2l5VXlNMUFJejNraUFwMUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9wcm9kdWN0LWNvbXBvc2l0ZSIsImlhdCI6MTczNjU0NTA5NCwiZXhwIjoxNzM2NjMxNDk0LCJzY29wZSI6InByb2R1Y3Q6cmVhZCBwcm9kdWN0OndyaXRlIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiR21nREpJTjhZSXVJcGIyWTdpeVV5TTFBSXoza2lBcDEifQ.jOtZa_p-JrqRYEjauu8_tPLONnPB8NU7IyHYomAN13_bzg7yV1IHzu2tHnCuH7oFYgyFeASiIdNvOHEOqxk1egQpolGau7zne5HKqBi4cWby75I5Tk4jHMm9ABrNXFD_ay-i2otxuSQvuDOLXaRTKJgK1cdnSWpUmP_CpccBK9G6IuCWnhVVtZsRLib0E7njfuBepqzZWSev3VmFo8GBuOjqB-NxeeltA0awk1YAUXmec4zSkWMqF8M6h2DZcCN9PoAP2LvRnu4yqMOh9k2eCZf4s3n3ZcbLUvcpo0lvNX9bXiwmxFZFFp0J6IwNogu2pPOGDjbjSbGGqnqGuzChMg
+echo $ACCESS_TOKEN
+```
+```text
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9OeUYzSF9qdmZ4LTYySFVCNXE2NCJ9.eyJpc3MiOiJodHRwczovL2Rldi1rMjZtd3cyMGM4ODJpcnY2LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJHbWdESklOOFlJdUlwYjJZN2l5VXlNMUFJejNraUFwMUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9wcm9kdWN0LWNvbXBvc2l0ZSIsImlhdCI6MTczNjU0NTA5NCwiZXhwIjoxNzM2NjMxNDk0LCJzY29wZSI6InByb2R1Y3Q6cmVhZCBwcm9kdWN0OndyaXRlIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiR21nREpJTjhZSXVJcGIyWTdpeVV5TTFBSXoza2lBcDEifQ.jOtZa_p-JrqRYEjauu8_tPLONnPB8NU7IyHYomAN13_bzg7yV1IHzu2tHnCuH7oFYgyFeASiIdNvOHEOqxk1egQpolGau7zne5HKqBi4cWby75I5Tk4jHMm9ABrNXFD_ay-i2otxuSQvuDOLXaRTKJgK1cdnSWpUmP_CpccBK9G6IuCWnhVVtZsRLib0E7njfuBepqzZWSev3VmFo8GBuOjqB-NxeeltA0awk1YAUXmec4zSkWMqF8M6h2DZcCN9PoAP2LvRnu4yqMOh9k2eCZf4s3n3ZcbLUvcpo0lvNX9bXiwmxFZFFp0J6IwNogu2pPOGDjbjSbGGqnqGuzChMg
+```
+
+---
+
+### 2. Test Normal Request (Tracing)
+
+```shell
+curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/1 -w "%{http_code}\n" -o /dev/null -s
+```
+
+You should see a 200 (validating that the request was SUCCESSful)
+```text
+200
+```
+
+### 3. Check Zipkin (Normal Request)
+
+Visit the local Zipkin UI -- ![http://127.0.0.1:9411/zipkin/](http://127.0.0.1:9411/zipkin/)
+
+![zipkin-splash.png](img/zipkin-splash.png)
+
+Click the red '+' symbol and select serviceName, which should give you a drop down of the services that have been
+detected. (If you see all 6, congratulations, it's working!)
+
+![zipkin-serviceNames.png](img/zipkin-serviceNames.png)
+
+Select gateway and then click the `Run Query` button. (Ignore the other parameters that pop up.)
+
+![zipking-gateway-results.png](img/zipking-gateway-results.png)
+
+You should see that one of the traces was executed a few seconds ago (depending on how fast it took you to get through
+this.) If you aren't sure, you can rerun the query above, and then work your way through again to find the trace.
+
+Click the `Show` button. 
+
+![show-gateway-product-composite.png](img/show-gateway-product-composite.png)
+
+#### Points of Interest
+
+#### On the left pane are two views (top and bottom)
+
+
+The **top** view is the entire trace.
+  - It shows you
+      - Duration
+      - Number of Services
+      - Total Spans
+      - Trace Id (important if you want to correlated the trace id w/ logs). Yes Mr. Lawrie, there is a difference. 
+-  You'll notice that there are two "blue" margins at the either end of the trace view. You can move these to focus on a selected time slice of the trace. (This will change the bottom left view) 
+  - The top view can be toggled from view with the `eye` button.
+
+
+The **bottom** view is a blown out view of the spans represented in the selected portion of the top view.
+  - Clicking on any of the spans in this view will change what is shown in the right pane. 
+  - If you select any span and click the `Focus on selected span`
+
+#### The right pane is information about the selected span. 
+
+There is a top, bottom and _sometimes_ middle. 
+
+The **top** pane has four values
+- Service Name
+- Span Name
+- Span ID
+- Parent Id (This is the parent "span"), The topmost span will show "none" here. 
+
+The **bottom** is a list of `Tags`.
+- all the tags include metdadata about OTEL (OpenTelemetry)
+- other tags are various indicators from the codebase or frameworks (i.e. Spring)
+
+The **_sometimes_ middle** is the `Annotation` section. 
+- this shows the timeline of the span, how long it lasts, when it starts/ends and networking information. 
+
+#### The span table button
+
+This button shows you a table of the span ids. The hamburger next to it will allow you to download a json file. 
+
+---
+
+### 4. Test Failed Request (Tracing)
+
+```shell
+curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/12345 -w "%{http_code}\n" -o /dev/null -s
+```
+
+You should see a 404 (confirming a NOT FOUND)
+```text
+404
+```
+
+### 5. Check Zipkin (Failed Request)
+
+Repeat Instructions from Step 3 to look through the failure. 
+
+Here is a screenshot of Zipkin UI. The top level span is selected so you can see the 404 NOT_FOUND on the bottom right. (In the tags section.)
+
+![tracing-not-found-example.png](img/tracing-not-found-example.png)
+
+
+### 6. Test Async Request (Tracing)
+
+Testing a delete to product-composite triggers asynchronous messaging to each of the backend microservices. 
+```shell
+curl -X DELETE -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/12345 -w "%{http_code}\n" -o /dev/null -s
+```
+
+You should see a 202 ACCEPTED request. 
+```text
+202
+```
+
+### 7. Check Zipkin (Async Request)
+
+Repeat Instructions from Step 3/5 to look through the failure.
+
+Tracking asynchronous requests can be challenging. Here, I've broken it out and looked for all the requests in the past ten minutes. (This is a luxury, being able to quiet a system so that only one request is seen.). 
+This shows each of the traces. 
+I've also clicked `start-time` so that the spans will be ordered
+
+![async-tracing.png](img/async-tracing.png)
+
+- the http delete is received by the `gateway` (of course) and immediately forwarded to the API layer (`product-composite`)
+
+- The next event is the `product-composite-service.delete-product`trace. This is still in the API layer...
+  - but breaking it down allows you to see that it executes three calls to the collaborating services. 
+  
+![product-composite-service-delete-product.png](img/product-composite-service-delete-product.png)
+
+- The following event is one of the streambridge events (which is product-composite enqueueing onto Rabbit)
+
+- The next 5 calls all show the same execution time (asynchronous!!)
+  - streambridge event
+  - product-composite sends the deletion to product
+    - product queue receives the DELETE event, rabbit processes it, product attempts to delete
+  - streambridge event 
+  - product-composite sends the deletion to recommendations
+    - recommendations queue receives the DELETE event, rabbit processes it, recommendations attempts to delete
+  - product-composite sends the deletion to reviews
+      - reviews queue receives the DELETE event, rabbit processes it, reviews attempts to delete
+
+
+Poke Around...have fun!
+
+---
