@@ -16,11 +16,6 @@
 
 ## Release Notes
 
-### v3.6.0 - Distributed Tracing (OLTP, Zipkin)
-
-- **Distributed Tracing (OTEL, Zipkin)**: Integrated OpenTelemetry-based tracing with Zipkin for distributed tracing support across microservices. Updated configurations, dependencies, and logging patterns to enable detailed traceability and observation. Added `@Observed` annotations and fixed persistence tests to work with the new tracing setup.
-
-- **Update release docs and prepare for v3.5.0**: Added details about Resilience4J Circuit Breaker integration to `RELEASE.md` and updated testing documentation. Adjusted version references in README and prepared documentation for the v3.5.0 release. Cleaned up entries for consistency with upcoming versioning.
 
 
 [Previous Releases](./doc/RELEASE.md)

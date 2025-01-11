@@ -1,8 +1,14 @@
 # Release Notes
 
+- [Version 4](#version-4)
 - [Version 3](#version-3)
 - [Version 2](#version-2)
 - [Version 1](#version-1)
+
+---
+
+# Version 4
+
 
 ---
 
@@ -11,6 +17,7 @@
 - Service Discovery (Eureka)
 ---
 
+- [v3.6.0 - Distributed Tracing (OLTP, Zipkin)](#v360---distributed-tracing-oltp-zipkin) [(v3.6.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.6.0)
 - [v3.5.0 - Circuit Breakers (Resilience4J)](#v350---circuit-breakers-resilience4j) [(v3.5.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.5.0)
 - [v3.4.0 - Configuration Centralization](#v340---configuration-centralization-spring-cloud-config) [(v3.4.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.4.0)
 - [v3.3.0 - Authorization (p2)](#v330---auth0) [(v3.2.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.3.0)
@@ -19,6 +26,20 @@
 - [v3.0.0 - Service Discovery](#v300---service-discovery-eureka) [(v3.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v3.0.0)
 
 ---
+
+## v3.6.0 - Distributed Tracing (OLTP, Zipkin)
+
+
+This commit introduces distributed tracing using OpenTelemetry in conjunction with Zipkin and updates several project documents in preparation for the v3.6.0 release. Specifically, it:
+
+1. Adds new tracing images and modifies the README file.
+2. Updates the RELEASE document with details about the resilience4J circuit breaker integration.
+3. Updates a number of configuration files to include information about tracing.
+4. Adds tracing dependencies in several 'build.gradle.kts' files.
+5. Inserts tracing details in 'TESTING-TESTENVONLY.md' and adds tracing configurations in Docker Compose files.
+
+The new tracing feature will allow more detailed observation of transactions across microservices. The documentation updates ensure that users have current and complete information about the system and its features.
+
 
 ## v3.5.0 - Circuit Breakers (Resilience4J)
 
