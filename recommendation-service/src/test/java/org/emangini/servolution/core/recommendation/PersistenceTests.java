@@ -1,5 +1,6 @@
 package org.emangini.servolution.core.recommendation;
 
+import io.micrometer.observation.ObservationRegistry;
 import org.emangini.servolution.core.recommendation.persistence.RecommendationEntity;
 import org.emangini.servolution.core.recommendation.persistence.RecommendationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 
@@ -21,6 +23,10 @@ import static org.testcontainers.shaded.org.hamcrest.Matchers.hasSize;
 
 @DataMongoTest(properties = {"spring.cloud.config.enabled=false"})
 public class PersistenceTests extends MongoDbTestBase {
+
+    // Only required a mock of the registry to pass this test.
+    @MockitoBean
+    private ObservationRegistry observationRegistry;
 
     @Autowired
     private RecommendationRepository repository;

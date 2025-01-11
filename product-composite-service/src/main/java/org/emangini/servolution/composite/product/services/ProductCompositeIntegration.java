@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.emangini.servolution.api.core.product.Product;
@@ -94,6 +95,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         log.info("All beans validated successfully.");
     }
 
+    @Observed(
+            name = "createProduct",
+            contextualName = "product-composite-integration.create-product"
+    )
     @Override
     public Mono<Product> createProduct(Product body) {
 
@@ -104,6 +109,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     }
 
+    @Observed(
+            name = "getProduct",
+            contextualName = "product-composite-integration.get-product"
+    )
     @Override
     @Retry(name = "product")
     @TimeLimiter(name = "product")
@@ -114,7 +123,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                 .fromUriString(PRODUCT_SERVICE_URL + "/product/{productId}?delay={delay}&faultPercent={faultPercent}")
                 .build(productId, delay, faultPercent);
 
-        log.debug("Calling getProduct API on URL: {}", url);
+        log.info("Calling getProduct API on URL: {}", url);
 
         return webClient.get()
                 .uri(url)
@@ -124,6 +133,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                 .onErrorMap(WebClientResponseException.class, this::handleException);
     }
 
+    @Observed(
+            name = "deleteProduct",
+            contextualName = "product-composite-integration.delete-product"
+    )
     @Override
     public Mono<Void> deleteProduct(int productId) {
 
@@ -134,6 +147,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     }
 
+    @Observed(
+            name = "createRecommendation",
+            contextualName = "product-composite-integration.create-recommendation"
+    )
     @Override
     public Mono<Recommendation> createRecommendation(Recommendation body) {
 
@@ -143,6 +160,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         }).subscribeOn(publishEventScheduler);
     }
 
+    @Observed(
+            name = "getRecommendations",
+            contextualName = "product-composite-integration.get-recommendations"
+    )
     @Override
     public Flux<Recommendation> getRecommendations(int productId) {
 
@@ -150,7 +171,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                 .fromUriString(RECOMMENDATION_SERVICE_URL + "/recommendation?productId={productId}")
                 .build(productId);
 
-        log.debug("Calling getRecommendations API on URL: {}", url);
+        log.info("Calling getRecommendations API on URL: {}", url);
 
         /*
             Returns an empty result so composite supports partial results if something happens during the
@@ -165,6 +186,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     }
 
+    @Observed(
+            name = "deleteRecommendations",
+            contextualName = "product-composite-integration.delete-recommendations"
+    )
     @Override
     public Mono<Void> deleteRecommendations(int productId) {
 
@@ -174,6 +199,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                 .then();
     }
 
+    @Observed(
+            name = "createReview",
+            contextualName = "product-composite-integration.create-review"
+    )
     @Override
     public Mono<Review> createReview(Review body) {
 
@@ -183,13 +212,18 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         }).subscribeOn(publishEventScheduler);
     }
 
+    @Observed(
+            name = "getReviews",
+            contextualName = "product-composite-integration.get-reviews"
+    )
     @Override
     public Flux<Review> getReviews(int productId) {
 
         URI url = UriComponentsBuilder
                 .fromUriString(REVIEW_SERVICE_URL + "/review?productId={productId}")
                 .build(productId);
-        log.debug("Calling getReviews API on URL: {}", url);
+
+        log.info("Calling getReviews API on URL: {}", url);
 
          /*
             Returns an empty result so composite supports partial results if something happens during the
@@ -204,6 +238,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     }
 
+    @Observed(
+            name = "deleteReviews",
+            contextualName = "product-composite-integration.delete-reviews"
+    )
     @Override
     public Mono<Void> deleteReviews(int productId) {
 
@@ -242,6 +280,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     }
 
     // TODO handle raw use of Event, Message
+    @Observed(
+            name = "sendMessage",
+            contextualName = "product-composite-integration.send-message"
+    )
     private void sendMessage(String bindingName, Event event) {
         log.debug("Sending a {} message to {}", event.getEventType(), bindingName);
         Message message = MessageBuilder.withPayload(event)

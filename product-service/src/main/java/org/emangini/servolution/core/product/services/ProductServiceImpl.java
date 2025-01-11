@@ -1,6 +1,7 @@
 package org.emangini.servolution.core.product.services;
 
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.extern.slf4j.Slf4j;
 import org.emangini.servolution.api.core.product.Product;
 import org.emangini.servolution.api.core.product.ProductService;
@@ -15,7 +16,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.Random;
 
 import static java.time.Duration.ofSeconds;
@@ -24,6 +24,8 @@ import static java.util.logging.Level.FINE;
 @RestController
 @Slf4j
 public class ProductServiceImpl implements ProductService {
+
+    private static final String INVALID_PRODUCT_ID = "Invalid productId: ";
 
     private final ProductRepository repository;
     private final ProductMapper mapper;
@@ -39,11 +41,15 @@ public class ProductServiceImpl implements ProductService {
         this.serviceUtil = serviceUtil;
     }
 
+    @Observed(
+            name = "createProduct",
+            contextualName = "product-service.create-product"
+    )
     @Override
     public Mono<Product> createProduct(Product body) {
 
         if (body.getProductId() < 1) {
-            throw new InvalidInputException("Invalid productId: " + body.getProductId());
+            throw new InvalidInputException(INVALID_PRODUCT_ID + body.getProductId());
         }
 
         ProductEntity entity = mapper.apiToEntity(body);
@@ -57,12 +63,15 @@ public class ProductServiceImpl implements ProductService {
                 .map(mapper::entityToApi);
     }
 
-
+    @Observed(
+            name = "getProduct",
+            contextualName = "product-service.get-product"
+    )
     @Override
     public Mono<Product> getProduct(int productId, int delay, int faultPercent) {
 
         if (productId < 1) {
-            throw new InvalidInputException("Invalid productId: " + productId);
+            throw new InvalidInputException(INVALID_PRODUCT_ID + productId);
         }
 
         log.info("calling getProduct for productId={}", productId);
@@ -79,8 +88,16 @@ public class ProductServiceImpl implements ProductService {
                 .map(this::setServiceAddress);
     }
 
+    @Observed(
+            name = "deleteProduct",
+            contextualName = "product-service.delete-product"
+    )
     @Override
     public Mono<Void> deleteProduct(int productId) {
+
+        if (productId < 1) {
+            throw new InvalidInputException(INVALID_PRODUCT_ID + productId);
+        }
         log.debug("deleteProduct: attempts to delete an entity with productId: {}", productId);
         return repository.findByProductId(productId)
                 .log(log.getName(), FINE)

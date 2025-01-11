@@ -20,6 +20,8 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:${property("springRetryVersion")}")
     implementation("org.springframework.security:spring-security-oauth2-resource-server")
     implementation("org.springframework.security:spring-security-oauth2-jose")
+    implementation("io.micrometer:micrometer-tracing-bridge-otel:${property("micrometerVersion")}")
+    implementation("io.opentelemetry:opentelemetry-exporter-zipkin:${property("oltpVersion")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 }

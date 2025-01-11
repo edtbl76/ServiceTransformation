@@ -21,12 +21,16 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config:${property("springCloudVersion")}")
     implementation("org.springframework.retry:spring-retry:${property("springRetryVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation("io.micrometer:micrometer-tracing-bridge-otel:${property("micrometerVersion")}")
+    implementation("io.opentelemetry:opentelemetry-exporter-zipkin:${property("oltpVersion")}")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mongodb")
+    testImplementation("io.micrometer:micrometer-tracing-test")
+    testImplementation("io.micrometer:micrometer-observation-test")
 }
 
 dependencyManagement{

@@ -1,4 +1,4 @@
-# ServiceTransformation v3.5.0
+# ServiceTransformation
 
 ## Table of Contents
 - [Release Notes](#release-notes)
@@ -16,13 +16,11 @@
 
 ## Release Notes
 
-### v3.5.0 - Resilience4J 
+### v3.6.0 - Distributed Tracing (OLTP, Zipkin)
 
-* **Resilience4J + Circuit Breaker integration**
-  * Expanded the TESTING.md and TESTING-TESTENVONLY.md to include steps for testing circuit breakers, such as response times and retry events. Updated `testRunner.sh` outputs and introduced resilience4j dependency to gradle.properties for circuit breaker integration.
+- **Distributed Tracing (OTEL, Zipkin)**: Integrated OpenTelemetry-based tracing with Zipkin for distributed tracing support across microservices. Updated configurations, dependencies, and logging patterns to enable detailed traceability and observation. Added `@Observed` annotations and fixed persistence tests to work with the new tracing setup.
 
-* **Update release documentation and prepare for v3.5.0 release**
-  * Updated RELEASE.md and README.md to include changes for v3.4.0 and prepared documentation for the upcoming v3.5.0 release. Adjusted version references and notes to align with the new release.
+- **Update release docs and prepare for v3.5.0**: Added details about Resilience4J Circuit Breaker integration to `RELEASE.md` and updated testing documentation. Adjusted version references in README and prepared documentation for the v3.5.0 release. Cleaned up entries for consistency with upcoming versioning.
 
 
 [Previous Releases](./doc/RELEASE.md)
@@ -73,6 +71,7 @@ NOTE: Environment must be up to reach these.
 - [OpenAPI](#openapi)
 - [RabbitMQ (Messaging)](#rabbitmq)
 - [Spring Actuator (HealthCheck)](#spring-actuator)
+- [Zipkin (Tracing)](#zipkin)
 
 ### Eureka
 
@@ -133,6 +132,9 @@ pass:guest
   - [/actuator/scheduledtasks](http://localhost:8080/actuator/scheduledtasks)
 
 
+### Zipkin
+
+- [Zipkin UI](http://127.0.0.1:9411/zipkin/)
 ---
 
 

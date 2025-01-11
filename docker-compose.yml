@@ -181,3 +181,17 @@ services:
       - SPRING_SECURITY_USER_PASSWORD=password
     volumes:
       - $PWD/configuration-repository:/configuration-repository
+
+  zipkin:
+    image: openzipkin/zipkin:3.4.4
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      - STORAGE_TYPE=mem
+    ports:
+      - "9411:9411"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

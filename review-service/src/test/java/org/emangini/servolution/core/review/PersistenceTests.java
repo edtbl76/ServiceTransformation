@@ -1,5 +1,6 @@
 package org.emangini.servolution.core.review;
 
+import io.micrometer.observation.ObservationRegistry;
 import org.emangini.servolution.core.review.persistence.ReviewEntity;
 import org.emangini.servolution.core.review.persistence.ReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,6 +31,11 @@ import static org.testcontainers.shaded.org.hamcrest.Matchers.hasSize;
 @Transactional(propagation = NOT_SUPPORTED)
 @AutoConfigureTestDatabase(replace = NONE)
 public class PersistenceTests extends MySqlTestBase {
+
+    // stupid disable autoconfig hack for AOP/OTEL
+    @MockitoBean
+    private ObservationRegistry observationRegistry;
+
 
     @Autowired
     ReviewRepository repository;

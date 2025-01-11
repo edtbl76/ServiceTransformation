@@ -23,6 +23,7 @@ subprojects {
     }
 
     dependencies {
+        implementation(platform("io.micrometer:micrometer-tracing-bom:${property("micrometerVersion")}"))
         implementation("org.mapstruct:mapstruct:${property("mapstructVersion")}")
         compileOnly("org.projectlombok:lombok:${property("lombokVersion")}")
         compileOnly("org.mapstruct:mapstruct-processor:${property("mapstructVersion")}")
