@@ -18,6 +18,8 @@
 
 ### v3.5.0 - Resilience4J 
 
+* **Resilience4J + Circuit Breaker integration**
+  * Expanded the TESTING.md and TESTING-TESTENVONLY.md to include steps for testing circuit breakers, such as response times and retry events. Updated `testRunner.sh` outputs and introduced resilience4j dependency to gradle.properties for circuit breaker integration.
 
 * **Update release documentation and prepare for v3.5.0 release**
   * Updated RELEASE.md and README.md to include changes for v3.4.0 and prepared documentation for the upcoming v3.5.0 release. Adjusted version references and notes to align with the new release.
