@@ -44,3 +44,7 @@ bin/
 
 #### Secrets!
 /auth0/env.bash
+
+### Helm ###
+../charts
+Chart.lock

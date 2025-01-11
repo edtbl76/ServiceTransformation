@@ -98,7 +98,6 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     }
 
-    @Disabled
     @Test
     void validateDuplicationFailure() {
 

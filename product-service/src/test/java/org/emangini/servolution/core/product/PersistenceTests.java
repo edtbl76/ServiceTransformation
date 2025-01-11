@@ -116,7 +116,6 @@ class PersistenceTests extends MongoDbTestBase {
 
     }
 
-    @Disabled
     @Test
     void validateDuplicateKeyException() {
         ProductEntity duplicateEntity = new ProductEntity(savedEntity.getProductId(), "name", 1);

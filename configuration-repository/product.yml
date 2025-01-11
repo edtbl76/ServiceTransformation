@@ -9,6 +9,7 @@ spring:
     host: localhost
     port: 27017
     database: productdb
+    auto-index-creation: true
   cloud:
     function.definition: messageProcessor
     stream:
