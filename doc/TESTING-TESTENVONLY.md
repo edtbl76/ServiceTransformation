@@ -12,6 +12,8 @@ These examples do **not** use seeded data.
 - [Testing Authorization (OpenAPI)]()
 - [Testing Config Server](#testing-config-server)
 - [Testing Encrypt/Decrypt Endpoints](#testing-encryptdecrypt-endpoints)
+- [Testing CircuitBreakers (Response Time)](#testing-circuitbreakers-response-time)
+- [Testing CircuitBreakers (Retry Events)](#testing-circuit-breakers-test-retries)
 
 ---
 
@@ -1153,4 +1155,308 @@ curl -k https://username:password@localhost:8443/config/decrypt -d e302e8cfd253b
 
 ```text
 hello world
+```
+
+---
+
+## Testing Circuitbreakers (Response Time)
+
+- [1. Set Access Token (Prep Step)](#1-set-access-token)
+- [2. Confirm Circuit Breaker is CLOSED](#2-confirm-circuit-breaker-is-closed)
+- [3. Emulate Normal Operation](#3-execute-normal-request-and-confirm-circuitbreaker-remains-closed)
+- [4. Emulate Requests that exceed time window](#4-send-3-slow-requests-validate-circuit-breaker-is-closed)
+- [5. Force OPEN (And validate HALF-OPEN)](#5-force-it-open-validate-open-then-half-open)
+- [6. Resume Normal Operation](#6-force-it-closed-with-successful-requests)
+- [7. Query CircuitBreaker state changes (AUDIT)](#7-query-state-changes-)
+
+
+`NOTE:` When setting up this environment, instead of starting up docker containers manually, run ```testRunner.sh start```. This will make 
+it much easier. 
+
+
+### 1. Set Access Token
+
+./testRunner.sh echoes the ACCESS_TOKEN to standard out. Copy this string into an ENV like the example below. 
+
+```shell
+export ACCESS_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9OeUYzSF9qdmZ4LTYySFVCNXE2NCJ9.eyJpc3MiOiJodHRwczovL2Rldi1rMjZtd3cyMGM4ODJpcnY2LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJHbWdESklOOFlJdUlwYjJZN2l5VXlNMUFJejNraUFwMUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9wcm9kdWN0LWNvbXBvc2l0ZSIsImlhdCI6MTczNjU0NTA5NCwiZXhwIjoxNzM2NjMxNDk0LCJzY29wZSI6InByb2R1Y3Q6cmVhZCBwcm9kdWN0OndyaXRlIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiR21nREpJTjhZSXVJcGIyWTdpeVV5TTFBSXoza2lBcDEifQ.jOtZa_p-JrqRYEjauu8_tPLONnPB8NU7IyHYomAN13_bzg7yV1IHzu2tHnCuH7oFYgyFeASiIdNvOHEOqxk1egQpolGau7zne5HKqBi4cWby75I5Tk4jHMm9ABrNXFD_ay-i2otxuSQvuDOLXaRTKJgK1cdnSWpUmP_CpccBK9G6IuCWnhVVtZsRLib0E7njfuBepqzZWSev3VmFo8GBuOjqB-NxeeltA0awk1YAUXmec4zSkWMqF8M6h2DZcCN9PoAP2LvRnu4yqMOh9k2eCZf4s3n3ZcbLUvcpo0lvNX9bXiwmxFZFFp0J6IwNogu2pPOGDjbjSbGGqnqGuzChMg
+echo $ACCESS_TOKEN
+```
+
+```text
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9OeUYzSF9qdmZ4LTYySFVCNXE2NCJ9.eyJpc3MiOiJodHRwczovL2Rldi1rMjZtd3cyMGM4ODJpcnY2LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJHbWdESklOOFlJdUlwYjJZN2l5VXlNMUFJejNraUFwMUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9wcm9kdWN0LWNvbXBvc2l0ZSIsImlhdCI6MTczNjU0NTA5NCwiZXhwIjoxNzM2NjMxNDk0LCJzY29wZSI6InByb2R1Y3Q6cmVhZCBwcm9kdWN0OndyaXRlIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiR21nREpJTjhZSXVJcGIyWTdpeVV5TTFBSXoza2lBcDEifQ.jOtZa_p-JrqRYEjauu8_tPLONnPB8NU7IyHYomAN13_bzg7yV1IHzu2tHnCuH7oFYgyFeASiIdNvOHEOqxk1egQpolGau7zne5HKqBi4cWby75I5Tk4jHMm9ABrNXFD_ay-i2otxuSQvuDOLXaRTKJgK1cdnSWpUmP_CpccBK9G6IuCWnhVVtZsRLib0E7njfuBepqzZWSev3VmFo8GBuOjqB-NxeeltA0awk1YAUXmec4zSkWMqF8M6h2DZcCN9PoAP2LvRnu4yqMOh9k2eCZf4s3n3ZcbLUvcpo0lvNX9bXiwmxFZFFp0J6IwNogu2pPOGDjbjSbGGqnqGuzChMg
+```
+
+---
+
+### 2. Confirm Circuit Breaker is Closed
+
+```NOTE:``` You won't be able to get CircuitBreaker information outside of the gateway:
+```text
+curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/actuator/health -s | jq -r .components.circuitBreakers
+null
+```
+
+You have to drill into the container directly
+
+```shell
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/health | jq -r .components.circuitBreakers.details.product.details.state
+```
+
+```text
+CLOSED
+```
+
+---
+
+### 3. Execute Normal Request And Confirm CircuitBreaker remains closed
+
+```shell
+curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/1 -w "%{http_code}\n" -o /dev/null -s
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/health | jq -r .components.circuitBreakers.details.product.details.state
+```
+
+The output is telling you that the "normal request" succeeded, and that the CB is still closed (as expected)
+```text
+200
+CLOSED
+```
+
+---
+
+### 4. Send 3 Slow Requests; Validate Circuit Breaker is Closed
+
+We're doing this by submitting 3 "slow" requests. 
+
+```shell
+for _ in {1..3}; do curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/1?delay=3 -s | jq;done
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/health | jq -r .components.circuitBreakers.details.product.details.state
+```
+
+You'll see the same request 3 times in a row:
+(You may note that the request Id's increment. In an active system this might not be plausible if many events are firing.)
+
+Either way this is indicative of a service that is no longer communicating...but it hasn't met the criteria to "OPEN" the circuitbreaker, so it remains CLOSED (as the output demonstrates)
+
+This means that requests are still be forwarded to the destination as if it were "up"
+```text
+{
+  "timestamp": "2025-01-10T21:50:24.951+00:00",
+  "path": "/product-composite/1",
+  "status": 500,
+  "error": "Internal Server Error",
+  "requestId": "da3bf460-44",
+  "message": "Did not observe any item or terminal signal within 2000ms in 'onErrorResume' (and no fallback has been configured)"
+}
+{
+  "timestamp": "2025-01-10T21:50:26.996+00:00",
+  "path": "/product-composite/1",
+  "status": 500,
+  "error": "Internal Server Error",
+  "requestId": "da3bf460-45",
+  "message": "Did not observe any item or terminal signal within 2000ms in 'onErrorResume' (and no fallback has been configured)"
+}
+{
+  "timestamp": "2025-01-10T21:50:29.039+00:00",
+  "path": "/product-composite/1",
+  "status": 500,
+  "error": "Internal Server Error",
+  "requestId": "da3bf460-46",
+  "message": "Did not observe any item or terminal signal within 2000ms in 'onErrorResume' (and no fallback has been configured)"
+}
+CLOSED
+```
+
+---
+
+### 5. Force It Open, Validate OPEN, then HALF-OPEN
+
+Sending the 4th request will open the circuit. When the circuitbreaker is OPEN, requests are "short-circuited" (hence the term!) preventing requests from being sent to the destination. 
+
+After 10 seconds, the state moves to HALF_OPEN, which is a configured state that allows a (configurable) limited number of tests calls to the service to determine if it's back up. (This is part of the concept of self-healing).
+
+If calls fail.. it goes back to open, if calls succeed. It closes. 
+
+```shell
+curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/1?delay=3 -s | jq
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/health | jq -r .components.circuitBreakers.details.product.details.state
+sleep 10 
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/health | jq -r .components.circuitBreakers.details.product.details.state
+```
+
+### 6. Force it Closed with Successful Requests
+
+```shell
+for _ in {1..3}; do curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/1 -w "%{http_code}\n" -o /dev/null -s;done
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/health | jq -r .components.circuitBreakers.details.product.details.state
+```
+
+3 good requests, puts the service back in a live (CLOSED) state. 
+```text
+200
+200
+200
+CLOSED
+```
+
+---
+
+### 7. Query State Changes 
+
+This call grabs the last three state transitions
+
+```shell
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/circuitbreakerevents/product/STATE_TRANSITION | jq -r '.circuitBreakerEvents[-3].stateTransition,.circuitBreakerEvents[-2].stateTransition,.circuitBreakerEvents[-1].stateTransition'
+
+```
+
+As you can see the cycle of the circuitbreaker state changes are captured as we observed them (and expected) 
+
+`NOTE:` Many folks don't know this exists. This is an **excellent** reference for debugging intermittent problems.
+
+```text
+CLOSED_TO_OPEN
+OPEN_TO_HALF_OPEN
+HALF_OPEN_TO_CLOSED
+```
+---
+
+## Testing Circuit Breakers (Test Retries)
+
+- [1. Set Access Token (Prep Step)](#1-set-access-token-retries)
+- [2. Testing Randomized Errors](#2-test-random-errors-w-faultpercent)
+- [3. Investigating Retry Events](#3-investigate-retry-events)
+
+`NOTE:` When setting up this environment, instead of starting up docker containers manually, run ```testRunner.sh start```. This will make
+it much easier.
+
+
+### 1. Set Access Token (Retries)
+
+./testRunner.sh echoes the ACCESS_TOKEN to standard out. Copy this string into an ENV like the example below.
+
+```shell
+export ACCESS_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9OeUYzSF9qdmZ4LTYySFVCNXE2NCJ9.eyJpc3MiOiJodHRwczovL2Rldi1rMjZtd3cyMGM4ODJpcnY2LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJHbWdESklOOFlJdUlwYjJZN2l5VXlNMUFJejNraUFwMUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9wcm9kdWN0LWNvbXBvc2l0ZSIsImlhdCI6MTczNjU0NTA5NCwiZXhwIjoxNzM2NjMxNDk0LCJzY29wZSI6InByb2R1Y3Q6cmVhZCBwcm9kdWN0OndyaXRlIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiR21nREpJTjhZSXVJcGIyWTdpeVV5TTFBSXoza2lBcDEifQ.jOtZa_p-JrqRYEjauu8_tPLONnPB8NU7IyHYomAN13_bzg7yV1IHzu2tHnCuH7oFYgyFeASiIdNvOHEOqxk1egQpolGau7zne5HKqBi4cWby75I5Tk4jHMm9ABrNXFD_ay-i2otxuSQvuDOLXaRTKJgK1cdnSWpUmP_CpccBK9G6IuCWnhVVtZsRLib0E7njfuBepqzZWSev3VmFo8GBuOjqB-NxeeltA0awk1YAUXmec4zSkWMqF8M6h2DZcCN9PoAP2LvRnu4yqMOh9k2eCZf4s3n3ZcbLUvcpo0lvNX9bXiwmxFZFFp0J6IwNogu2pPOGDjbjSbGGqnqGuzChMg
+echo $ACCESS_TOKEN
+```
+
+```text
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9OeUYzSF9qdmZ4LTYySFVCNXE2NCJ9.eyJpc3MiOiJodHRwczovL2Rldi1rMjZtd3cyMGM4ODJpcnY2LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJHbWdESklOOFlJdUlwYjJZN2l5VXlNMUFJejNraUFwMUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9wcm9kdWN0LWNvbXBvc2l0ZSIsImlhdCI6MTczNjU0NTA5NCwiZXhwIjoxNzM2NjMxNDk0LCJzY29wZSI6InByb2R1Y3Q6cmVhZCBwcm9kdWN0OndyaXRlIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXpwIjoiR21nREpJTjhZSXVJcGIyWTdpeVV5TTFBSXoza2lBcDEifQ.jOtZa_p-JrqRYEjauu8_tPLONnPB8NU7IyHYomAN13_bzg7yV1IHzu2tHnCuH7oFYgyFeASiIdNvOHEOqxk1egQpolGau7zne5HKqBi4cWby75I5Tk4jHMm9ABrNXFD_ay-i2otxuSQvuDOLXaRTKJgK1cdnSWpUmP_CpccBK9G6IuCWnhVVtZsRLib0E7njfuBepqzZWSev3VmFo8GBuOjqB-NxeeltA0awk1YAUXmec4zSkWMqF8M6h2DZcCN9PoAP2LvRnu4yqMOh9k2eCZf4s3n3ZcbLUvcpo0lvNX9bXiwmxFZFFp0J6IwNogu2pPOGDjbjSbGGqnqGuzChMg
+```
+
+---
+
+### 2. Test Random Errors (w/ faultPercent)
+
+You may need to execute this several times to get the results we're looking for.
+
+```shell
+for _ in {1..10}; do time curl -H "Authorization: Bearer $ACCESS_TOKEN" -k https://localhost:8443/product-composite/1?faultPercent=25 -w "%{http_code}\n" -o /dev/null -s;done
+```
+
+
+Example (Your output will vary)
+
+- 200 is the output of the curl command (despite whether there is a retry!)
+- real, user, sys time(s) are the output of time. We're looking at real.
+
+I've highlighted what we are looking for... the real time that is > 1s means that a retry has occurred. 
+
+```text
+200
+
+real    0m0.034s
+user    0m0.002s
+sys     0m0.005s
+200
+
+real    0m0.035s
+user    0m0.002s
+sys     0m0.005s
+200
+
+real    0m0.035s
+user    0m0.004s
+sys     0m0.004s
+200
+
+real    0m2.094s   <--- 
+user    0m0.003s
+sys     0m0.006s
+200
+
+real    0m2.073s   <---
+user    0m0.008s
+sys     0m0.007s
+200
+
+real    0m0.035s
+user    0m0.005s
+sys     0m0.003s
+200
+
+real    0m0.038s
+user    0m0.003s
+sys     0m0.006s
+200
+
+real    0m0.041s
+user    0m0.003s
+sys     0m0.006s
+200
+
+real    0m0.034s
+user    0m0.004s
+sys     0m0.004s
+200
+
+real    0m0.037s
+user    0m0.004s
+sys     0m0.004s
+```
+
+### 3. Investigate retry events
+
+```shell
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/retryevents | jq '.retryEvents[-2],.retryEvents[-1]'
+```
+
+Example (your output will depend on the events.)
+
+This example shows 2 attempts which is consistent w/ the 2 highlighted 2s time spans above.
+```text
+docker-compose exec product-composite curl -s http://product-composite:8080/actuator/retryevents | jq '.retryEvents[-2],.retryEvents[-1]'
+{
+  "retryName": "product",
+  "type": "RETRY",
+  "creationTime": "2025-01-11T02:24:37.343606189Z[UTC]",
+  "errorMessage": "org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError: 500 Internal Server Error from GET http://12a77b62a19b:8080/product/1",
+  "numberOfAttempts": 2
+}
+{
+  "retryName": "product",
+  "type": "SUCCESS",
+  "creationTime": "2025-01-11T02:24:38.344894323Z[UTC]",
+  "errorMessage": "org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError: 500 Internal Server Error from GET http://12a77b62a19b:8080/product/1",
+  "numberOfAttempts": 2
+}
+```
+
+Example (from a different run) --> This demonstrates a situation where the retry resulted in an ERROR. 
+- This would have resulted in a possible failure leading to opening up the circuit breaker. 
+```text
+{
+  "retryName": "product",
+  "type": "RETRY",
+  "creationTime": "2025-01-11T02:24:14.660334881Z[UTC]",
+  "errorMessage": "org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError: 500 Internal Server Error from GET http://12a77b62a19b:8080/product/1",
+  "numberOfAttempts": 2
+}
+{
+  "retryName": "product",
+  "type": "ERROR",
+  "creationTime": "2025-01-11T02:24:15.684524177Z[UTC]",
+  "errorMessage": "org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError: 500 Internal Server Error from GET http://12a77b62a19b:8080/product/1",
+  "numberOfAttempts": 3
+}
 ```
