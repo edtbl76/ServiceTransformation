@@ -190,19 +190,6 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
       - KAFKA_ADVERTISED_HOST_NAME=zookeeper
 
-  eureka:
-    build: discovery
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - CONFIG_SERVER_USR=username
-      - CONFIG_SERVER_PWD=password
-
   gateway:
     build: gateway
     deploy:

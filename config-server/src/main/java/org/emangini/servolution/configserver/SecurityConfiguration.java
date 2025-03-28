@@ -18,6 +18,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest()
                         .authenticated())
                 .httpBasic(withDefaults());

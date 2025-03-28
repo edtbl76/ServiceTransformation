@@ -21,7 +21,6 @@ dependencies {
     implementation("org.springframework.security:spring-security-oauth2-jose")
     implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit:${property("springCloudVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka:${property("springCloudVersion")}")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${property("springCloudVersion")}")
     implementation("io.micrometer:micrometer-tracing-bridge-otel:${property("micrometerVersion")}")
     implementation("io.opentelemetry:opentelemetry-exporter-zipkin:${property("oltpVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:${property("springCloudVersion")}")
