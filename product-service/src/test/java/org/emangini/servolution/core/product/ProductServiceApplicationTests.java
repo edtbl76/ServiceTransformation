@@ -31,10 +31,7 @@ import static org.springframework.http.MediaType.*;
 
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
-        properties = {
-                "eureka.client.enabled=false",
-                "spring.cloud.config.enabled=false"}
-)
+        properties = {"spring.cloud.config.enabled=false"})
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
     @Autowired
@@ -98,7 +95,6 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     }
 
-    @Disabled
     @Test
     void validateDuplicationFailure() {
 

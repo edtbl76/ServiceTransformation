@@ -15,7 +15,6 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:${property("springCloudVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-config:${property("springCloudVersion")}")
     implementation("org.springframework.retry:spring-retry:${property("springRetryVersion")}")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${property("springCloudVersion")}")
     implementation("org.springframework.security:spring-security-oauth2-authorization-server:${property("oauth2ServerVersion")}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

@@ -1,6 +1,7 @@
 services:
   product:
     build: product-service
+    image: servicetransformation/product-service
     deploy:
       resources:
         limits:
@@ -19,6 +20,7 @@ services:
         condition: service_started
   product-p2:
     build: product-service
+    image: servicetransformation/product-service
     deploy:
       resources:
         limits:
@@ -39,6 +41,7 @@ services:
 
   recommendation:
     build: recommendation-service
+    image: servicetransformation/recommendation-service
     deploy:
       resources:
         limits:
@@ -57,6 +60,7 @@ services:
         condition: service_started
   recommendation-p2:
     build: recommendation-service
+    image: servicetransformation/recommendation-service
     deploy:
       resources:
         limits:
@@ -76,6 +80,7 @@ services:
 
   review:
     build: review-service
+    image: servicetransformation/review-service
     deploy:
       resources:
         limits:
@@ -93,6 +98,7 @@ services:
         condition: service_started
   review-p2:
     build: review-service
+    image: servicetransformation/review-service
     deploy:
       resources:
         limits:
@@ -112,6 +118,7 @@ services:
 
   product-composite:
     build: product-composite-service
+    image: servicetransformation/product-composite-service
     deploy:
       resources:
         limits:
@@ -190,21 +197,9 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
       - KAFKA_ADVERTISED_HOST_NAME=zookeeper
 
-  eureka:
-    build: discovery
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - CONFIG_SERVER_USR=username
-      - CONFIG_SERVER_PWD=password
-
   gateway:
     build: gateway
+    image: servicetransformation/gateway
     deploy:
       resources:
         limits:
@@ -221,6 +216,7 @@ services:
 
   auth-server:
     build: authz
+    image: servicetransformation/auth-server
     deploy:
       resources:
         limits:
@@ -230,13 +226,14 @@ services:
       - CONFIG_SERVER_USR=username
       - CONFIG_SERVER_PWD=password
     healthcheck:
-      test: ["CMD", "curl", "-fs", "http://localhost:9999/actuator/health"]
+      test: ["CMD", "curl", "-fs", "http://localhost/actuator/health"]
       interval: 5s
       timeout: 2s
       retries: 60
 
   config-server:
     build: config-server
+    image: servicetransformation/config-server
     deploy:
       resources:
         limits:

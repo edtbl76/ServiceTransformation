@@ -10,5 +10,4 @@ spring:
     host: rabbitmq
 
 app:
-  eureka-server: eureka
   auth-server: auth-server

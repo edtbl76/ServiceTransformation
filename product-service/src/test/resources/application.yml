@@ -1,2 +1,6 @@
 server.error.include-message: always
 spring.cloud.stream.default-binder: rabbit
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
