@@ -9,6 +9,7 @@
 
 # Version 4
 
+
 - [v4.0.0 - Kubernetes](#v) [(v4.0.0 Release)](https://github.com/edtbl76/ServiceTransformation/releases/tag/v4.0.0)
 
 ## v4.0.0 - Kubernetes Preparation
@@ -34,6 +35,7 @@ This Pull Request introduces significant modifications aimed at streamlining and
 - Updates in health check and testing logic to align with non-Eureka deployments.
 
 Deprecated the discovery module and related configurations.
+
 
 ---
 
