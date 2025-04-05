@@ -27,8 +27,7 @@
 ### All in One
 
 ```shell
-./gradlew build 
-docker-compose build
+./gradlew clean build && docker-compose build
 ./testRunner.sh start stop
 ```
 

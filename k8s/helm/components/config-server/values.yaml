@@ -27,9 +27,9 @@ configmap:
   volumeMounts:
     mountPath: /configuration-repository
 
-service:
-  ports:
-    - port: 8888
-      targetPort: http
-      protocol: TCP
-      name: http
+#service:
+#  ports:
+#    - port: 8888
+#      targetPort: http
+#      protocol: TCP
+#      name: http

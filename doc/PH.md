@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 ### Testing Product Service Directly
 ```shell
 http http://localhost:8080/product/3

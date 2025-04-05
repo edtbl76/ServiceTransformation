@@ -14,27 +14,7 @@
 
 ## v4.0.0 - Kubernetes Preparation
 
-This Pull Request introduces significant modifications aimed at streamlining and removing outdated service components (like Eureka) while integrating Helm for building a microservices-based Kubernetes deployment. Additionally, multiple configurations were updated for better resource management, and the Helm chart structure was introduced for improved deployment processes.
 
-**Core Updates:**
-- Removal of Eureka as a service discovery mechanism across multiple services and related configurations.
-- Dependency cleanup in gradle files and removal of related test cases.
-- Updated Docker Compose files to exclude Eureka-related configurations and replace service-specific host handling.
-
-**Kubernetes Integration:**
-- Added Helm charts for component-based deployment (e.g., auth-server, product, gateway).
-- Created common Helm library chart to standardize shared configurations across services.
-- Introduced Helm environment charts (development, production) with detailed values and secrets for deployment environments.
-
-**Configuration Enhancements:**
-- Added new configuration files (production and Docker profiles) for services, replacing hardcoded Eureka-based connections.
-- Updated resource allocations in YAML files to allocate memory limits and requests efficiently.
-
-**Testing Updates:**
-- Enhanced testRunner.sh to support Kubernetes (USE_K8S) integration with configurable namespaces and credentials.
-- Updates in health check and testing logic to align with non-Eureka deployments.
-
-Deprecated the discovery module and related configurations.
 
 
 ---
