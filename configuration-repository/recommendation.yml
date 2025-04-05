@@ -39,3 +39,50 @@ logging:
     org.springframework.data.mongodb.core.ReactiveMongoTemplate: debug
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+---
+spring:
+  config.activate.on-profile: docker
+  data.mongodb.host: mongodb
+
+server.port: 80
+
+---
+spring:
+  config.activate.on-profile: kafka
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka.binder.replication-factor: 1
+  kafka:
+    bootstrap-servers: kafka:9092
+
+management.health.rabbit.enabled: false
+
+---
+spring:
+  config.activate.on-profile: streaming_partitioned
+  cloud.stream.bindings.messageProcessor-in-0.consumer:
+    partitioned: true
+    instanceCount: 2
+
+---
+spring:
+  config.activate.on-profile: streaming_instance_0
+  cloud.stream.bindings.messageProcessor-in-0.consumer.instanceIndex: 0
+
+---
+spring:
+  config.activate.on-profile: streaming_instance_1
+  cloud.stream.bindings.messageProcessor-in-0.consumer.instanceIndex: 1
+
+---
+spring:
+  config.activate.on-profile: production
+  data.mongodb.host: 172.17.0.1
+
+logging:
+  level:
+    root: WARN
+    org.emangini.servolution: WARN
+    org.springframework.data.mongodb.core.MongoTemplate: WARN

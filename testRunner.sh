@@ -259,10 +259,6 @@ ACCESS_TOKEN=$(curl -X POST https://${TENANT}/oauth/token \
 echo ACCESS_TOKEN=$ACCESS_TOKEN
 AUTH="-H \"Authorization: Bearer $ACCESS_TOKEN\""
 
-# Verify Eureka/Service Discovery (All Microservices should be registered)
-assertCurl 200 "curl -H "accept:application/json" -k https://username:password@$HOST:$PORT/eureka/api/apps -s"
-assertEqual 6 $(echo $RESPONSE | jq ".applications.application | length")
-
 # Verify access to config server and that encrypt/decrypt endpoints work
 assertCurl 200 "curl -H "accept:application/json" -k https://username:password@$HOST:$PORT/config/product/docker -s"
 TEST_VALUE="hello world"

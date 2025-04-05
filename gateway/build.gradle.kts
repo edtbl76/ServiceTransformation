@@ -13,7 +13,6 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway:${property("springCloudVersion")}")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${property("springCloudVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:${property("springCloudVersion")}")
     implementation("org.springframework.cloud:spring-cloud-starter-config:${property("springCloudVersion")}")

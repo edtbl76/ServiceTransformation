@@ -10,11 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-        properties = {
-                "eureka.client.enabled=false",
-                "spring.cloud.config.enabled=false"
-        })
+@SpringBootTest(properties = {"spring.cloud.config.enabled=false"})
 @AutoConfigureMockMvc
 class OAuth2AuthorizationServerApplicationTests {
 
