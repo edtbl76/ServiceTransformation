@@ -19,32 +19,26 @@ spring:
           uri: http://product-composite
           predicates:
             - Path=/product-composite/**
-
         - id: oauth2-server
           uri: http://${app.auth-server}
           predicates:
             - Path=/oauth2/**
-
         - id: oauth2-login
           uri: http://${app.auth-server}
           predicates:
             - Path=/login/**
-
         - id: oauth2-error
           uri: http://${app.auth-server}
           predicates:
             - Path=/error/**
-
         - id: product-composite-swagger-ui
           uri: http://product-composite
           predicates:
             - Path=/openapi/**
-
         - id: product-composite-swagger-ui-webjars
           uri: http://product-composite
           predicates:
             - Path=/webjars/**
-
         - id: config-server
           uri: http://config-server:8888
           predicates:

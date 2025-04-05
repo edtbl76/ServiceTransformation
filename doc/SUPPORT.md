@@ -7,6 +7,8 @@
 - [Docker-Compose](#docker-compose)
 - [httpstat.us](#httpstat)
 - [Kafka](#kafka)
+- [kubectl (K8S CLI)](#kubectl-k8s-cli)
+- [Minikube](#minikube)
 - [MySQL](#mysql)
 
 
@@ -197,8 +199,88 @@ products
 recommendations
 reviews
 ```
+---
+
+## kubectl (k8s CLI)
+
+- [Get Contexts](#get-contexts)
+
+### Get Contexts
+
+```shell
+kubectl config get-contexts(base) ~/IdeaProjects/ServiceTransf(base) ~/IdeaProjects/ServiceTransformation git:[develop]
+minikube startormation git:[develop]
+minikube start
+
+```
+```text
+CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
+*         minikube   minikube   minikube   default
+```
 
 
+---
+## Minikube
+
+- [Set Profile](#setting-profile)
+- [List Profiles](#list-profiles)
+- [Start Cluster](#start-cluster)
+
+### Setting profile
+
+```shell
+minikube profile my-profile
+```
+---
+
+### List Profile(s)
+
+```shell
+minikube profile list
+```
+
+```text
+|----------|-----------|---------|--------------|------|--------------|---------|-------|--------|
+| Profile  | VM Driver | Runtime |      IP      | Port |   Version    | Status  | Nodes | Active |
+|----------|-----------|---------|--------------|------|--------------|---------|-------|--------|
+| minikube | docker    | docker  | 192.168.49.2 | 8443 | v1.27.0-rc.0 | Unknown |     1 | *      |
+|----------|-----------|---------|--------------|------|--------------|---------|-------|--------|
+```
+
+### Start Cluster
+
+```shell
+minikube start
+```
+
+```text
+😄  minikube v1.30.1 on Debian bookworm/sid
+✨  Using the docker driver based on existing profile
+💨  For improved Docker performance, enable the overlay Linux kernel module using 'modprobe overlay'
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+🏃  Updating the running docker "minikube" container ...
+🐳  Preparing Kubernetes v1.27.0-rc.0 on Docker 23.0.2 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔗  Configuring bridge CNI (Container Networking Interface) ...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🔎  Verifying Kubernetes components...
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+### Stop Cluster
+
+```shell
+minikube stop
+```
+```text
+✋  Stopping node "minikube"  ...
+🛑  Powering off "minikube" via SSH ...
+🛑  1 node stopped.
+```
 
 ---
 ## MySQL

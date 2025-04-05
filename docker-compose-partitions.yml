@@ -1,6 +1,7 @@
 services:
   product:
     build: product-service
+    image: servicetransformation/product-service
     deploy:
       resources:
         limits:
@@ -19,6 +20,7 @@ services:
         condition: service_healthy
   product-p2:
     build: product-service
+    image: servicetransformation/product-service
     deploy:
       resources:
         limits:
@@ -39,6 +41,7 @@ services:
 
   recommendation:
     build: recommendation-service
+    image: servicetransformation/recommendation-service
     deploy:
       resources:
         limits:
@@ -57,6 +60,7 @@ services:
         condition: service_healthy
   recommendation-p2:
     build: recommendation-service
+    image: servicetransformation/recommendation-service
     deploy:
       resources:
         limits:
@@ -76,6 +80,7 @@ services:
 
   review:
     build: review-service
+    image: servicetransformation/review-service
     deploy:
       resources:
         limits:
@@ -93,6 +98,7 @@ services:
         condition: service_healthy
   review-p2:
     build: review-service
+    image: servicetransformation/review-service
     deploy:
       resources:
         limits:
@@ -112,6 +118,7 @@ services:
 
   product-composite:
     build: product-composite-service
+    image: servicetransformation/product-composite-service
     deploy:
       resources:
         limits:
@@ -178,21 +185,9 @@ services:
       timeout: 2s
       retries: 60
 
-  eureka:
-    build: discovery
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - CONFIG_SERVER_USR=username
-      - CONFIG_SERVER_PWD=password
-    ports:
-      - "8761:8761"
-
   gateway:
     build: gateway
+    image: servicetransformation/gateway
     deploy:
       resources:
         limits:
@@ -209,6 +204,7 @@ services:
 
   auth-server:
     build: authz
+    image: servicetransformation/auth-server
     deploy:
       resources:
         limits:
@@ -225,6 +221,7 @@ services:
 
   config-server:
     build: config-server
+    image: servicetransformation/config-server
     deploy:
       resources:
         limits:

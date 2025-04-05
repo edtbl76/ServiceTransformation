@@ -129,6 +129,7 @@ services:
 
   gateway:
     build: gateway
+    image: servicetransformation/gateway
     deploy:
       resources:
         limits:
@@ -183,6 +184,7 @@ services:
           memory: 512M
     environment:
       - STORAGE_TYPE=mem
+      - RABBIT_ADDRESSES
     ports:
       - "9411:9411"
     depends_on:

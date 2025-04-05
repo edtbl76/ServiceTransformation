@@ -27,8 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
-        properties = {"spring.cloud.config.enabled=false"}
-)
+        properties = {"spring.cloud.config.enabled=false"})
 class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
     @Autowired

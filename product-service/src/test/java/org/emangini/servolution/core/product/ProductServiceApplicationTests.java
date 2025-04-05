@@ -5,7 +5,6 @@ import org.emangini.servolution.api.event.Event;
 import org.emangini.servolution.api.exceptions.InvalidInputException;
 import org.emangini.servolution.core.product.persistence.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,8 +30,7 @@ import static org.springframework.http.MediaType.*;
 
 @SpringBootTest(
         webEnvironment = RANDOM_PORT,
-        properties = {"spring.cloud.config.enabled=false"}
-)
+        properties = {"spring.cloud.config.enabled=false"})
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
     @Autowired
