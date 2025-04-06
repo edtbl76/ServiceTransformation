@@ -176,7 +176,7 @@ services:
     volumes:
       - $PWD/configuration-repository:/configuration-repository
 
-  zipkin:
+  zipkin-server:
     image: openzipkin/zipkin:3.4.4
     deploy:
       resources:

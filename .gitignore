@@ -48,3 +48,5 @@ bin/
 ### Helm ###
 ../charts
 Chart.lock
+
+*.tgz
