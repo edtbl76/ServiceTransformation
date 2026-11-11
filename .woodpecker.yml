@@ -1,0 +1,55 @@
+# ServiceTransformation CI on the lab's Woodpecker (weyland B245). Runs every service's Gradle tests and sends the
+# JUnit results to Trunk Flaky Tests, pass or fail.
+# Woodpecker can't receive GitHub webhooks on the LAN, so runs are started manually (Run pipeline / the CLI).
+# Runbook: docs/runbooks/trunk-flaky-tests.md in weyland-lab.
+
+# LOCAL backend (rogueone's agents): the persistence and application tests start MongoDB / MySQL with
+# Testcontainers, which needs a Docker daemon. The cluster agents have none. Gradle itself runs in a JDK 17
+# container (the project's target) with the host's Docker socket, as the invoking user, so nothing on the host
+# toolchain matters and nothing in the workspace ends up root-owned.
+labels:
+  backend: local
+
+when:
+  - event: [manual, push]
+    branch: main
+
+steps:
+  - name: test-java
+    image: /bin/bash
+    commands:
+      - mkdir -p "$HOME/.cache/woodpecker-gradle" reports/junit/gradle
+      - >-
+        docker run --rm --network host
+        --user "$(id -u):$(id -g)" --group-add "$(stat -c %g /var/run/docker.sock)"
+        -e HOME=/tmp -e GRADLE_USER_HOME=/gradle -e TESTCONTAINERS_RYUK_DISABLED=true
+        -v /var/run/docker.sock:/var/run/docker.sock
+        -v "$HOME/.cache/woodpecker-gradle:/gradle" -v "$PWD:/work" -w /work
+        eclipse-temurin:17-jdk ./gradlew test --no-daemon --continue; rc=$?;
+        find . -path '*/build/test-results/test/*.xml' -exec cp {} reports/junit/gradle/ \; ;
+        exit $rc
+
+  # The uploader is weyland-lab's own fail-closed script at a pinned commit, checked against its sha256, running
+  # the pinned trunk-analytics-cli. It goes red if Trunk did not confirm the upload. Runs after a red test step too.
+  # Downloads go under the workspace, not /tmp: the four local agents share one host.
+  - name: trunk-upload
+    image: /bin/bash
+    when:
+      - status: [success, failure]
+    environment:
+      TRUNK_API_TOKEN:
+        from_secret: trunk_org_token
+      TRUNK_COLLECTION_ID: l7eE7ZjM
+      TRUNK_REPO_URL: https://github.com/edtbl76/ServiceTransformation
+      TRUNK_CLI_VERSION: 0.16.1
+      TRUNK_CLI_SHA256: 8c34f99a41d4b3151f711aca05d01478b2f707dd698d3980d2524646021af5f2
+      UPLOADER_COMMIT: 45c0b1caaf8b53a4647a0fb18dade66b5cdaaf2b
+      UPLOADER_SHA256: 09f3887d98e403800cc7a249eb2979b18405dd096a9d823cb8b066d8f8e6dd55
+    commands:
+      - mkdir -p .trunk-ci
+      - curl -sSfL --retry 5 --retry-all-errors --retry-delay 3 -o .trunk-ci/cli.tgz "https://github.com/trunk-io/analytics-cli/releases/download/$TRUNK_CLI_VERSION/trunk-analytics-cli-x86_64-unknown-linux.tar.gz"
+      - echo "$TRUNK_CLI_SHA256  .trunk-ci/cli.tgz" | sha256sum -c -
+      - tar -xzf .trunk-ci/cli.tgz -C .trunk-ci trunk-analytics-cli
+      - curl -sSfL --retry 5 --retry-all-errors --retry-delay 3 -o .trunk-ci/trunk-upload.sh "https://raw.githubusercontent.com/edtbl76/weyland-lab/$UPLOADER_COMMIT/scripts/ci/trunk-upload.sh"
+      - echo "$UPLOADER_SHA256  .trunk-ci/trunk-upload.sh" | sha256sum -c -
+      - TRUNK_CLI="$PWD/.trunk-ci/trunk-analytics-cli" bash .trunk-ci/trunk-upload.sh reports/junit
